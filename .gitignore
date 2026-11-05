@@ -5,3 +5,6 @@ results/raw/
 results/logs/
 checkpoints/
 *.ckpt*
+*.pt
+.pytest_cache/
+.ruff_cache/

@@ -566,7 +566,7 @@ wheels = [
 [[package]]
 name = "slateq-study"
 version = "0.0.1"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "absl-py" },
     { name = "gin-config" },

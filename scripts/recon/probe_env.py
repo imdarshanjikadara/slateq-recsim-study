@@ -1,4 +1,5 @@
-"""Phase 0: probe RecSim Interest Evolution on the modern stack. Writes results/recon/env_probe.json.
+"""Phase 0: probe RecSim Interest Evolution on the modern stack.
+Writes results/recon/env_probe.json.
 
 Checks hypotheses H5/H6 and documents reward, termination, observation content, resampling and RNG.
 """
@@ -10,7 +11,9 @@ import json
 import sys
 from pathlib import Path
 
-import _shim  # noqa: F401  (installs the RecSim import shim)
+from slateq_study import recsim_compat
+
+recsim_compat.install()  # must precede any recsim import
 import numpy as np
 from recsim import choice_model
 from recsim.agents import random_agent
@@ -73,13 +76,15 @@ def main():
     out["response_fields"] = list(env.observation_space["response"][0].spaces.keys())
     out["env_true_choice_model"] = type(env._environment.user_model.choice_model).__name__
     out["choice_model_classes"] = sorted(
-        n for n, c in inspect.getmembers(choice_model, inspect.isclass)
+        n
+        for n, c in inspect.getmembers(choice_model, inspect.isclass)
         if c.__module__ == choice_model.__name__ and n.endswith("ChoiceModel")
     )
     us = env._environment.user_model._user_state
     out["user_params"] = {
         k: (None if v is None else float(np.asarray(v).item()))
-        for k, v in vars(us).items() if not isinstance(v, (set, np.ndarray, dict))
+        for k, v in vars(us).items()
+        if not isinstance(v, (set, np.ndarray, dict))
     }
     out["user_choice_features"] = us.choice_features
 
@@ -98,8 +103,11 @@ def main():
 
     # Episode-length distribution under the random agent (20 users, N=10, k=3).
     lengths = [run_random_episode(make(10, 3, s), global_seed=s)["length"] for s in range(20)]
-    out["random_lengths_20_users"] = {"min": min(lengths), "max": max(lengths),
-                                      "mean": float(np.mean(lengths))}
+    out["random_lengths_20_users"] = {
+        "min": min(lengths),
+        "max": max(lengths),
+        "mean": float(np.mean(lengths)),
+    }
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
     OUT.write_text(json.dumps(out, indent=2, default=str))

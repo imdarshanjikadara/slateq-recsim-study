@@ -1,0 +1,11 @@
+# Smoke test: random agent, 3 evaluation episodes, no training.
+experiment: smoke
+env:
+  num_candidates: 10
+  slate_size: 3
+  resample_documents: true
+  max_steps: 1000
+agent:
+  name: random
+train_steps: 0
+eval_episodes: 3
