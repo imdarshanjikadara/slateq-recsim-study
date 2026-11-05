@@ -1,4 +1,4 @@
-"""Per-process runtime setup. The ONE place that caps threads (replaces the playbook's tf_compat).
+"""Per-process runtime setup. The ONE place that caps threads (replaces the old TF-era tf_compat).
 
 Call `configure_process()` at the top of every entrypoint, before torch does any work.
 Phase 0 measured 1 torch thread faster than 4 for our small network

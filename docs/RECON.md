@@ -141,4 +141,4 @@ Q4 is deferred to Phase 3. Q5 and Q6 are still open.
 | 3 SlateQ (PyTorch) | Port + unit tests vs the reference maths; ladder 1–5; γ=0 calibration vs oracle | Calibration passes; hyperparameters frozen |
 | 4 Sweeps | Grid chosen from Phase 3 timings; 3 workers | Kill/resume mini-sweep passes; dry-run approved |
 | 5 RQ3 | The agent's assumed model is fixed in our code (proportional, `no_click_mass=1`); vary the env's true choice model (MNL temperature, cascade variants, `no_click_mass`) | Protocol addendum before the sweep |
-| 6–9 | As in the playbook | As in the playbook |
+| 6–9 | As in the project plan | As in the project plan |
