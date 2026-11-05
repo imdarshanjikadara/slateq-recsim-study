@@ -46,7 +46,7 @@ def _agent(cls=RecordingAgent):
 
 def test_call_order_and_final_reward_delivered():
     agent = _agent()
-    rec = run_episode(agent, ENV, env_seed=5)
+    rec = run_episode(agent, ENV, env_seed=5).record
     assert agent.calls[0] == "begin" and agent.calls[-1] == "end"
     assert agent.calls.count("begin") == 1 and agent.calls.count("end") == 1
     assert len(agent.calls) == rec.length + 1  # begin + (length-1) steps + end
@@ -57,15 +57,15 @@ def test_call_order_and_final_reward_delivered():
 
 def test_same_seed_same_trajectory_random_agent():
     env = make_env(ENV, 0)
-    a = run_episode(make_agent("random", env.action_space, 7), ENV, env_seed=11)
-    b = run_episode(make_agent("random", env.action_space, 7), ENV, env_seed=11)
+    a = run_episode(make_agent("random", env.action_space, 7), ENV, env_seed=11).record
+    b = run_episode(make_agent("random", env.action_space, 7), ENV, env_seed=11).record
     assert a == b
 
 
 def test_max_steps_truncation_counted_separately():
     short = EnvConfig(num_candidates=10, slate_size=3, max_steps=5)
     agent = _agent()
-    rec = run_episode(agent, short, env_seed=1)
+    rec = run_episode(agent, short, env_seed=1).record
     assert rec.length == 5 and rec.truncated and not rec.terminated
     assert agent.calls[-1] == "end"
 

@@ -23,6 +23,7 @@ class Agent(ABC):
 
     name: str = "base"
     learns: bool = False
+    privileged: bool = False  # True only for the oracle: harness calls attach_true_state()
 
     def __init__(self, action_space: Any, seed: int):
         self.num_candidates = int(action_space.nvec[0])
@@ -41,3 +42,7 @@ class Agent(ABC):
 
     def end_episode(self, reward: float, observation: Observation) -> None:  # noqa: B027
         """Optional hook; learning agents use it to store the terminal transition."""
+
+    def attach_true_state(self, env) -> None:
+        """PRIVILEGED hook, called by the harness after env.reset() only if `privileged`."""
+        raise NotImplementedError(f"{self.name} is not a privileged agent")

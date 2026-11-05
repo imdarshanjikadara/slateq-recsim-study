@@ -69,10 +69,14 @@ def main(argv: list[str] | None = None) -> int:
             seeding.agent_seed(args.seed),
             **cfg.agent.params,
         )
+        meta["privileged_agent"] = agent.privileged
         if cfg.train_steps:
             raise NotImplementedError("training arrives in Phase 3")
-        records = evaluate(agent, cfg.env, args.seed, cfg.eval_episodes)
+        records, traces = evaluate(
+            agent, cfg.env, args.seed, cfg.eval_episodes, trace_episodes=cfg.trace_episodes
+        )
         rd.write_episodes(records)
+        rd.write_traces(traces)
         meta.update(
             summary=metrics.summarize(records),
             end_time=io.now(),

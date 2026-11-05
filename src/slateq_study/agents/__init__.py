@@ -5,11 +5,13 @@ from __future__ import annotations
 from typing import Any
 
 from slateq_study.agents.base import Agent
+from slateq_study.agents.oracle import OracleMyopicAgent
 from slateq_study.agents.random import RandomAgent
 from slateq_study.agents.testing import FailingAgent
 
 AGENTS: dict[str, type[Agent]] = {
     RandomAgent.name: RandomAgent,
+    OracleMyopicAgent.name: OracleMyopicAgent,
     FailingAgent.name: FailingAgent,
 }
 

@@ -4,6 +4,7 @@ results/raw/<experiment>/<config_hash>/seed<k>/
     config.yaml   resolved config
     meta.json     provenance: git SHA (+dirty), uv.lock hash, versions, host, times, summary
     episodes.csv  one row per evaluation episode
+    traces.jsonl  per-step traces of the first `trace_episodes` eval episodes (optional)
     run.log       log of this run
     error.json    only if the run failed
     DONE          written LAST; its presence is the only signal that a run is complete
@@ -107,6 +108,14 @@ class RunDir:
             w = csv.DictWriter(f, fieldnames=list(rows[0]))
             w.writeheader()
             w.writerows(rows)
+
+    def write_traces(self, traces: list[dict]) -> None:
+        """Per-step traces (JSON lines) for the first `trace_episodes` eval episodes."""
+        if not traces:
+            return
+        with (self.path / "traces.jsonl").open("w", encoding="utf-8") as f:
+            for row in traces:
+                f.write(json.dumps(row, separators=(",", ":")) + "\n")
 
     def write_error(self, exc: BaseException) -> None:
         self.path.mkdir(parents=True, exist_ok=True)

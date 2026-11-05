@@ -19,6 +19,7 @@ class EpisodeRecord:
     mean_clicked_quality: float  # NaN when the episode had no clicks
     terminated: bool  # user's time budget ran out (true RecSim termination)
     truncated: bool  # stopped by our max_steps safeguard
+    duplicate_slates: int = 0  # steps whose slate repeated an item
 
     @property
     def reward_per_step(self) -> float:
@@ -46,4 +47,5 @@ def summarize(records: list[EpisodeRecord]) -> dict:
         "mean_clicked_quality": nan_mean(r.mean_clicked_quality for r in records),
         "mean_reward_per_step": nan_mean(r.reward_per_step for r in records),
         "truncated_episodes": sum(r.truncated for r in records),
+        "duplicate_slates": sum(r.duplicate_slates for r in records),
     }

@@ -21,6 +21,16 @@ class ConfigError(ValueError):
     """Raised for any invalid configuration."""
 
 
+# Config name -> RecSim class in recsim/choice_model.py (the user's TRUE choice model).
+# RecSim's CascadeChoiceModel is abstract (no score_documents); only its two subclasses are usable.
+CHOICE_MODELS = {
+    "multinomial_proportional": "MultinomialProportionalChoiceModel",  # RecSim default
+    "multinomial_logit": "MultinomialLogitChoiceModel",
+    "exponential_cascade": "ExponentialCascadeChoiceModel",
+    "proportional_cascade": "ProportionalCascadeChoiceModel",
+}
+
+
 @dataclass(frozen=True)
 class EnvConfig:
     """RecSim Interest Evolution settings.
@@ -28,14 +38,20 @@ class EnvConfig:
     num_candidates: N, the "catalog size" of the proposal (candidates per step; DEVIATIONS D5).
     slate_size: k, items shown per step.
     max_steps: safeguard against unbounded episodes (RecSim itself only stops on time budget).
+    choice_model: the user's TRUE choice model (varied only in RQ3 / Phase 5).
     """
 
     num_candidates: int = 10
     slate_size: int = 3
     resample_documents: bool = True
     max_steps: int = 1000
+    choice_model: str = "multinomial_proportional"
 
     def validate(self) -> None:
+        if self.choice_model not in CHOICE_MODELS:
+            raise ConfigError(
+                f"unknown choice_model {self.choice_model!r}; known: {sorted(CHOICE_MODELS)}"
+            )
         if not isinstance(self.num_candidates, int) or self.num_candidates < 2:
             raise ConfigError(f"num_candidates must be an int >= 2, got {self.num_candidates!r}")
         if not isinstance(self.slate_size, int) or self.slate_size < 1:
@@ -74,12 +90,15 @@ class RunConfig:
     agent: AgentConfig = field(default_factory=AgentConfig)
     train_steps: int = 0
     eval_episodes: int = 10
+    trace_episodes: int = 0  # per-step traces for the FIRST n eval episodes (PROTOCOL S5)
 
     def validate(self) -> None:
         if not re.fullmatch(r"[A-Za-z0-9_\-]+", self.experiment or ""):
             raise ConfigError(f"experiment must match [A-Za-z0-9_-]+, got {self.experiment!r}")
         self.env.validate()
         self.agent.validate()
+        if not isinstance(self.trace_episodes, int) or self.trace_episodes < 0:
+            raise ConfigError(f"trace_episodes must be an int >= 0, got {self.trace_episodes!r}")
         if not isinstance(self.train_steps, int) or self.train_steps < 0:
             raise ConfigError(f"train_steps must be an int >= 0, got {self.train_steps!r}")
         if not isinstance(self.eval_episodes, int) or self.eval_episodes < 1:
