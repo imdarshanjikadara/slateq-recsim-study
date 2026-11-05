@@ -1,0 +1,3 @@
+[submodule "third_party/recsim"]
+	path = third_party/recsim
+	url = https://github.com/google-research/recsim
