@@ -1,0 +1,38 @@
+[project]
+name = "slateq-study"
+version = "0.0.1"
+description = "SlateQ vs myopic slate recommendation in RecSim Interest Evolution (CSCI 5933 course project)"
+requires-python = ">=3.14,<3.15"
+dependencies = [
+    # RecSim environment runtime (third_party/recsim, loaded via our import shim; no TensorFlow)
+    "numpy>=2.5",
+    "gymnasium>=1.4",   # only gymnasium.spaces is used, standing in for gym.spaces
+    "gin-config>=0.5",  # stands in for gin.tf (decorators only)
+    "absl-py>=2.5",
+    "six>=1.17",
+    # Learning agents (SlateQ port)
+    "torch>=2.15",
+    # Analysis / config
+    "pandas>=3.1",
+    "scipy>=1.18",
+    "matplotlib>=3.11",
+    "pyyaml>=6.0",
+]
+
+[dependency-groups]
+dev = ["pytest>=9.2", "ruff>=0.17"]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+torch = { index = "pytorch-cpu" }
+
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true
+
+[tool.ruff]
+line-length = 100
+extend-exclude = ["third_party"]

@@ -1,0 +1,70 @@
+{
+  "tensorflow_imported": false,
+  "obs_keys": [
+    "user",
+    "doc",
+    "response"
+  ],
+  "user_obs_shape": [
+    20
+  ],
+  "user_obs_equals_true_interests": true,
+  "doc_obs_shape": [
+    20
+  ],
+  "doc_obs_is_one_hot": true,
+  "num_docs_in_obs": 10,
+  "action_space": "MultiDiscrete([10 10 10])",
+  "response_fields": [
+    "click",
+    "cluster_id",
+    "liked",
+    "quality",
+    "watch_time"
+  ],
+  "env_true_choice_model": "MultinomialProportionalChoiceModel",
+  "choice_model_classes": [
+    "AbstractChoiceModel",
+    "CascadeChoiceModel",
+    "ExponentialCascadeChoiceModel",
+    "MultinomialLogitChoiceModel",
+    "MultinomialProportionalChoiceModel",
+    "NormalizableChoiceModel",
+    "ProportionalCascadeChoiceModel"
+  ],
+  "user_params": {
+    "time_budget": 200.0,
+    "keep_interact_prob": null,
+    "min_doc_utility": null,
+    "user_update_alpha": 0.2647058823529412,
+    "step_penalty": 0.5,
+    "user_quality_factor": 0.0,
+    "document_quality_factor": 1.0,
+    "watched_videos": null,
+    "impressed_videos": null,
+    "liked_videos": null
+  },
+  "user_choice_features": {
+    "score_scaling": 0.05,
+    "attention_prob": 0.65,
+    "no_click_mass": 1.0,
+    "min_normalizer": -1.0
+  },
+  "random_episode_N10_k3": {
+    "length": 64,
+    "total_reward": 157.6870138614256,
+    "reward_mismatch_steps": 0,
+    "steps_where_candidate_ids_changed": 64,
+    "final_budget": -0.071844453001353,
+    "budget_at_second_last_step": 1.6870138614256178
+  },
+  "determinism": {
+    "same_env_seed_same_global_seed_identical": true,
+    "same_env_seed_different_global_seed_identical": false
+  },
+  "random_lengths_20_users": {
+    "min": 53,
+    "max": 87,
+    "mean": 69.75
+  }
+}

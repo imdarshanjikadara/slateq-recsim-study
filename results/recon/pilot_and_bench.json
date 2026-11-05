@@ -1,0 +1,299 @@
+{
+  "pilot": [
+    {
+      "label": "PILOT",
+      "agent": "random",
+      "N": 5,
+      "k": 2,
+      "seed": 0,
+      "episodes": 100,
+      "mean_total_reward": 154.3703549082686,
+      "std_total_reward": 11.426130899044937,
+      "mean_length": 84.01,
+      "mean_clicks": 39.1,
+      "mean_clicked_quality": -0.6098792827278544,
+      "env_steps_per_sec": 4435.344623022137
+    },
+    {
+      "label": "PILOT",
+      "agent": "oracle_myopic",
+      "N": 5,
+      "k": 2,
+      "seed": 0,
+      "episodes": 100,
+      "mean_total_reward": 161.13719596300064,
+      "std_total_reward": 17.995366193220807,
+      "mean_length": 68.18,
+      "mean_clicks": 40.74,
+      "mean_clicked_quality": -0.6656672838432144,
+      "env_steps_per_sec": 3129.3370899706547
+    },
+    {
+      "label": "PILOT",
+      "agent": "random",
+      "N": 5,
+      "k": 2,
+      "seed": 1,
+      "episodes": 100,
+      "mean_total_reward": 154.03775123355715,
+      "std_total_reward": 9.702307508308806,
+      "mean_length": 83.35,
+      "mean_clicks": 38.95,
+      "mean_clicked_quality": -0.6195707003703429,
+      "env_steps_per_sec": 4501.025542644054
+    },
+    {
+      "label": "PILOT",
+      "agent": "oracle_myopic",
+      "N": 5,
+      "k": 2,
+      "seed": 1,
+      "episodes": 100,
+      "mean_total_reward": 161.77824287727643,
+      "std_total_reward": 17.097709721727924,
+      "mean_length": 68.63,
+      "mean_clicks": 40.97,
+      "mean_clicked_quality": -0.632487299739839,
+      "env_steps_per_sec": 3137.7833926310323
+    },
+    {
+      "label": "PILOT",
+      "agent": "random",
+      "N": 10,
+      "k": 3,
+      "seed": 0,
+      "episodes": 100,
+      "mean_total_reward": 161.01283613145753,
+      "std_total_reward": 10.379108210726487,
+      "mean_length": 71.23,
+      "mean_clicks": 40.71,
+      "mean_clicked_quality": -0.591936539690136,
+      "env_steps_per_sec": 3433.171979491603
+    },
+    {
+      "label": "PILOT",
+      "agent": "oracle_myopic",
+      "N": 10,
+      "k": 3,
+      "seed": 0,
+      "episodes": 100,
+      "mean_total_reward": 167.76360414998715,
+      "std_total_reward": 22.598311581292982,
+      "mean_length": 59.0,
+      "mean_clicks": 42.51,
+      "mean_clicked_quality": -0.6371394674563227,
+      "env_steps_per_sec": 2315.0871246369443
+    },
+    {
+      "label": "PILOT",
+      "agent": "random",
+      "N": 10,
+      "k": 3,
+      "seed": 1,
+      "episodes": 100,
+      "mean_total_reward": 161.18548394273566,
+      "std_total_reward": 10.52943157071995,
+      "mean_length": 71.62,
+      "mean_clicks": 40.96,
+      "mean_clicked_quality": -0.5814503184705493,
+      "env_steps_per_sec": 3368.8850584596744
+    },
+    {
+      "label": "PILOT",
+      "agent": "oracle_myopic",
+      "N": 10,
+      "k": 3,
+      "seed": 1,
+      "episodes": 100,
+      "mean_total_reward": 166.13841655115678,
+      "std_total_reward": 19.530910459031208,
+      "mean_length": 59.75,
+      "mean_clicks": 42.05,
+      "mean_clicked_quality": -0.6423638489766763,
+      "env_steps_per_sec": 2293.623324087836
+    },
+    {
+      "label": "PILOT",
+      "agent": "random",
+      "N": 20,
+      "k": 5,
+      "seed": 0,
+      "episodes": 100,
+      "mean_total_reward": 164.43001229401062,
+      "std_total_reward": 12.238404866342185,
+      "mean_length": 59.44,
+      "mean_clicks": 41.67,
+      "mean_clicked_quality": -0.6512405717030703,
+      "env_steps_per_sec": 2244.6087284982027
+    },
+    {
+      "label": "PILOT",
+      "agent": "oracle_myopic",
+      "N": 20,
+      "k": 5,
+      "seed": 0,
+      "episodes": 100,
+      "mean_total_reward": 169.73426916265595,
+      "std_total_reward": 25.697139376716688,
+      "mean_length": 52.57,
+      "mean_clicks": 42.96,
+      "mean_clicked_quality": -0.6825875202997079,
+      "env_steps_per_sec": 1412.217808956548
+    },
+    {
+      "label": "PILOT",
+      "agent": "random",
+      "N": 20,
+      "k": 5,
+      "seed": 1,
+      "episodes": 100,
+      "mean_total_reward": 162.93144378651797,
+      "std_total_reward": 10.267263968165665,
+      "mean_length": 59.64,
+      "mean_clicks": 41.31,
+      "mean_clicked_quality": -0.6783662604879204,
+      "env_steps_per_sec": 2211.0860533264354
+    },
+    {
+      "label": "PILOT",
+      "agent": "oracle_myopic",
+      "N": 20,
+      "k": 5,
+      "seed": 1,
+      "episodes": 100,
+      "mean_total_reward": 170.18251918189424,
+      "std_total_reward": 23.458973107096018,
+      "mean_length": 53.12,
+      "mean_clicks": 43.17,
+      "mean_clicked_quality": -0.645062993325243,
+      "env_steps_per_sec": 1500.6361459868754
+    }
+  ],
+  "pilot_paired": [
+    {
+      "label": "PILOT",
+      "N": 5,
+      "k": 2,
+      "seed": 0,
+      "mean_diff_oracle_minus_random": 6.766841054732074,
+      "se_diff": 1.6037700450068555
+    },
+    {
+      "label": "PILOT",
+      "N": 5,
+      "k": 2,
+      "seed": 1,
+      "mean_diff_oracle_minus_random": 7.740491643719306,
+      "se_diff": 1.4673190786356065
+    },
+    {
+      "label": "PILOT",
+      "N": 10,
+      "k": 3,
+      "seed": 0,
+      "mean_diff_oracle_minus_random": 6.750768018529605,
+      "se_diff": 2.089156557666417
+    },
+    {
+      "label": "PILOT",
+      "N": 10,
+      "k": 3,
+      "seed": 1,
+      "mean_diff_oracle_minus_random": 4.952932608421101,
+      "se_diff": 1.8243442437302906
+    },
+    {
+      "label": "PILOT",
+      "N": 20,
+      "k": 5,
+      "seed": 0,
+      "mean_diff_oracle_minus_random": 5.3042568686453055,
+      "se_diff": 2.281850628144425
+    },
+    {
+      "label": "PILOT",
+      "N": 20,
+      "k": 5,
+      "seed": 1,
+      "mean_diff_oracle_minus_random": 7.251075395376283,
+      "se_diff": 2.043451035414138
+    }
+  ],
+  "torch_bench": [
+    {
+      "label": "BENCH",
+      "N": 5,
+      "torch_threads": 1,
+      "updates_per_sec_batch32": 328.9076254166733,
+      "action_selections_per_sec": 7685.489282717385
+    },
+    {
+      "label": "BENCH",
+      "N": 5,
+      "torch_threads": 4,
+      "updates_per_sec_batch32": 246.71296098244474,
+      "action_selections_per_sec": 6016.678231750906
+    },
+    {
+      "label": "BENCH",
+      "N": 10,
+      "torch_threads": 1,
+      "updates_per_sec_batch32": 275.5969890094299,
+      "action_selections_per_sec": 7826.685868378383
+    },
+    {
+      "label": "BENCH",
+      "N": 10,
+      "torch_threads": 4,
+      "updates_per_sec_batch32": 213.56953934508292,
+      "action_selections_per_sec": 6199.743331047432
+    },
+    {
+      "label": "BENCH",
+      "N": 20,
+      "torch_threads": 1,
+      "updates_per_sec_batch32": 185.8490909098812,
+      "action_selections_per_sec": 5741.9894465156995
+    },
+    {
+      "label": "BENCH",
+      "N": 20,
+      "torch_threads": 4,
+      "updates_per_sec_batch32": 176.59890292057602,
+      "action_selections_per_sec": 3791.632120695651
+    }
+  ],
+  "fullslateq_action_counts": [
+    {
+      "N": 5,
+      "k": 2,
+      "ordered_slates_N_perm_k": 20,
+      "unordered_slates_N_choose_k": 10
+    },
+    {
+      "N": 10,
+      "k": 3,
+      "ordered_slates_N_perm_k": 720,
+      "unordered_slates_N_choose_k": 120
+    },
+    {
+      "N": 20,
+      "k": 5,
+      "ordered_slates_N_perm_k": 1860480,
+      "unordered_slates_N_choose_k": 15504
+    },
+    {
+      "N": 10,
+      "k": 2,
+      "ordered_slates_N_perm_k": 90,
+      "unordered_slates_N_choose_k": 45
+    },
+    {
+      "N": 20,
+      "k": 3,
+      "ordered_slates_N_perm_k": 6840,
+      "unordered_slates_N_choose_k": 1140
+    }
+  ],
+  "torch_version": "2.15.0+cpu"
+}
