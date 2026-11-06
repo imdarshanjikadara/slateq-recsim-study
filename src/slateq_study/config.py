@@ -91,12 +91,28 @@ class RunConfig:
     train_steps: int = 0
     eval_episodes: int = 10
     trace_episodes: int = 0  # per-step traces for the FIRST n eval episodes (PROTOCOL S5)
+    eval_every: int = 0  # learning-curve point every n training steps (0 = no curve)
+    curve_episodes: int = 200  # episodes per curve point (tune stream)
+    eval_stream: str = "eval"  # final evaluation stream: "eval" (results) or "tune" (tuning)
 
     def validate(self) -> None:
         if not re.fullmatch(r"[A-Za-z0-9_\-]+", self.experiment or ""):
             raise ConfigError(f"experiment must match [A-Za-z0-9_-]+, got {self.experiment!r}")
         self.env.validate()
         self.agent.validate()
+        if self.eval_stream not in ("eval", "tune"):
+            raise ConfigError(f"eval_stream must be 'eval' or 'tune', got {self.eval_stream!r}")
+        for name in ("eval_every", "curve_episodes"):
+            v = getattr(self, name)
+            if not isinstance(v, int) or v < 0:
+                raise ConfigError(f"{name} must be an int >= 0, got {v!r}")
+        from slateq_study.agents import AGENTS
+
+        learns = AGENTS[self.agent.name].learns
+        if learns and self.train_steps == 0:
+            raise ConfigError(f"agent {self.agent.name!r} learns: train_steps must be > 0")
+        if not learns and (self.train_steps or self.eval_every):
+            raise ConfigError(f"agent {self.agent.name!r} does not learn: no training settings")
         if not isinstance(self.trace_episodes, int) or self.trace_episodes < 0:
             raise ConfigError(f"trace_episodes must be an int >= 0, got {self.trace_episodes!r}")
         if not isinstance(self.train_steps, int) or self.train_steps < 0:
@@ -108,11 +124,20 @@ class RunConfig:
         return dataclasses.asdict(self)
 
     def canonical_json(self) -> str:
-        return json.dumps(self.to_dict(), sort_keys=True, separators=(",", ":"))
+        """Fields added after Phase 2 are omitted while at their defaults, so earlier run
+        directories (smoke, baselines) keep their config_hash."""
+        d = self.to_dict()
+        for name, default in _HASH_OPTIONAL.items():
+            if d.get(name) == default:
+                d.pop(name)
+        return json.dumps(d, sort_keys=True, separators=(",", ":"))
 
     @property
     def config_hash(self) -> str:
         return hashlib.sha256(self.canonical_json().encode()).hexdigest()[:12]
+
+
+_HASH_OPTIONAL = {"eval_every": 0, "curve_episodes": 200, "eval_stream": "eval"}
 
 
 def _build(cls, data: Any, where: str):

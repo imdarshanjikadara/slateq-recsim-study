@@ -18,11 +18,13 @@ from slateq_study import runtime
 
 runtime.configure_process(threads=1)  # before anything else touches torch / recsim
 
+import torch  # noqa: E402
+
 from slateq_study import io, metrics, seeding  # noqa: E402
 from slateq_study.agents import make_agent  # noqa: E402
 from slateq_study.config import ConfigError, load_config  # noqa: E402
 from slateq_study.envs import make_env  # noqa: E402
-from slateq_study.harness import evaluate  # noqa: E402
+from slateq_study.harness import evaluate, train  # noqa: E402
 from slateq_study.log import setup_logging  # noqa: E402
 
 
@@ -71,10 +73,36 @@ def main(argv: list[str] | None = None) -> int:
         )
         meta["privileged_agent"] = agent.privileged
         if cfg.train_steps:
-            raise NotImplementedError("training arrives in Phase 3")
+            t_train = time.perf_counter()
+            curves = train(
+                agent,
+                cfg.env,
+                args.seed,
+                cfg.train_steps,
+                eval_every=cfg.eval_every,
+                curve_episodes=cfg.curve_episodes,
+            )
+            meta["train_wall_clock_sec"] = time.perf_counter() - t_train
+            meta["training"] = {
+                "train_steps": agent.training_steps,
+                "updates": agent.updates,
+                "target_syncs": agent.target_syncs,
+                "replay_size": agent.replay.size,
+            }
+            rd.write_csv("curves.csv", curves)
+            rd.write_csv("diagnostics.csv", agent.diag)
+            torch.save(agent.state_dict(), rd.path / "model.pt")
+        t_eval = time.perf_counter()
         records, traces = evaluate(
-            agent, cfg.env, args.seed, cfg.eval_episodes, trace_episodes=cfg.trace_episodes
+            agent,
+            cfg.env,
+            args.seed,
+            cfg.eval_episodes,
+            stream=cfg.eval_stream,
+            trace_episodes=cfg.trace_episodes,
         )
+        meta["eval_wall_clock_sec"] = time.perf_counter() - t_eval
+        meta["eval_stream"] = cfg.eval_stream
         rd.write_episodes(records)
         rd.write_traces(traces)
         meta.update(

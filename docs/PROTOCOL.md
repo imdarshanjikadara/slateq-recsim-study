@@ -75,14 +75,38 @@ A failed or timed-out run has `error.json` and no `DONE`; it is listed in a stat
 
 Cells (5,2), (10,3), (20,5); agents random and oracle-myopic; run seeds 0–4; 2400 eval episodes; traces for the first 5 episodes. Script: `scripts/baselines.py` → `results/baselines/`. The RQ2 sweep grid is chosen in Phase 4.
 
-## 12. To be fixed in Phase 3, BEFORE any sweep (placeholders)
+## 12. Learned agents: training, budget and tuning (rules fixed 2026-11-06, before any Phase 3 run)
 
-- Training budget (environment steps per learned run), identical for all learned agents: **TBD (Phase 3)**.
-- Tuning grid (≤ 4 knobs × ≤ 3 values), tuning cells, tuning seeds (tune stream), budget, identical for SlateQ and learned-myopic: **TBD (Phase 3)**.
-- FullSlateQ action-count cap: **TBD (Phase 3)**.
+**12.1 Defaults (T1)** — `src/slateq_study/agents/slateq.py`, following RecSim's SlateDecompQAgent and dopamine's DQN defaults (dopamine source not in this repo: UNVERIFIED locally):
+centered RMSProp (lr 2.5e-4, decay 0.95, eps 1e-5), γ 0.99 (learned-myopic: γ = 0), batch 32, one update every 4 env steps once the replay holds > 20,000 transitions, target-network sync every 8,000 steps, replay capacity ≥ training budget, ε-greedy ε = 1 during the 20K warmup and then linearly to 0.01 over 100,000 steps, **ε_eval = 0**, top-k serving, SARSA target, squared loss on clicked steps only, Glorot-uniform init.
+
+**12.2 Phase 3 run seeds** (never 0–4, which are reserved for the final results): sanity ladder 100–101; budget rule 100–102; tuning 100–101; final Phase 3 curves 200–202. All Phase 3 runs train on the train stream and are scored on the **tune** stream (500 episodes per run; learning curves 200 episodes). The eval stream is not used in Phase 3.
+
+**12.3 Training budget rule (T2).** SlateQ with the 12.1 defaults, cell (10,3), seeds 100–102, 500,000 steps, curve point every 50,000 steps. Let d_s = (curve reward at 500K) − (curve reward at 300K) for seed s. **Budget = 500,000 if mean(d) > 2 · SD(d)/√3, otherwise 300,000.** The budget is the same for every learned agent and every cell. It is fixed before tuning.
+
+**12.4 Tuning (T3).** Grid: learning rate {1e-4, 2.5e-4, 1e-3} × target-update period {1000, 4000, 8000} = 9 configs; all other settings as 12.1. Cell (10,3), seeds 100–101, budget from 12.3, 500 tune-stream episodes per run. SlateQ and learned-myopic are tuned on the identical grid and budget (36 runs). **Selection: for each agent separately, the config with the highest mean (over the 2 seeds) tune-stream total reward.** Ties within 0.01 are broken by the earlier grid entry (lr ascending, then period ascending). The selected configs are then frozen for all later phases and written into §12.6.
+
+**12.5 Re-check of the episode count (T4).** From the tuning runs of the two selected configs (same tune episodes for both, so paired), n = ⌈(SD_diff / 0.5)²⌉ per seed. If max n > 2400, eval_episodes is raised (rounded up to a multiple of 50) before Phase 4. It is never lowered.
+
+**12.6 Frozen values** (filled in by Phase 3; source files in `results/phase3/`):
+- Training budget: **300,000 environment steps** (`budget.json`: mean d = −0.137 ≤ 2·SD/√3 = 0.535).
+- SlateQ hyperparameters: **learning rate 1e-3, target-update period 1,000**; everything else as 12.1 (`tune.json`).
+- Learned-myopic hyperparameters: **learning rate 2.5e-4, target-update period 1,000**; everything else as 12.1 (`tune.json`). With γ = 0 the target network never enters the loss, so the three periods gave identical results and the tie went to the earliest grid entry.
+- eval_episodes after 12.5: **2400 (unchanged)**. Required n per seed = 206 / 163 (`tune.json`, `episode_recheck`).
+
+**12.7 Sanity-ladder pass criteria** (cell (5,2), seeds 100–101, 12.1 defaults, 300K steps, 500 paired tune episodes vs random and oracle on the same env seeds):
+1. Plumbing: run completes; all logged loss/Q values finite; replay size = steps; final ε = 0.01; ≥ 1 target sync.
+2. Beats random: for each learned agent and each seed, paired mean difference (agent − random) > 2 SE.
+3. Calibration: learned-myopic recovers ≥ 90% of the oracle's improvement over random, i.e. (LM − random) / (oracle − random) ≥ 0.9, averaging both seeds. If it fails: stop and diagnose the pipeline first.
+4. Q-scale: learned-myopic's mean clicked-item Q in its last diagnostics window lies in [2, 6] (immediate watch time ≈ 4); SlateQ's is larger than learned-myopic's and below 400 = 4/(1−γ).
+5. Learning curves over 3 seeds with frozen hyperparameters (stage "final") are reported; no pass threshold beyond finite values.
+
+**12.8 FullSlateQ (T5):** deferred until after Phase 3; cap proposed in Phase 4 from measured timings (RECON suggests ~720 ordered slates).
 
 ## 13. Change log
 
 | Date | Change | Reason |
 |---|---|---|
 | 2026-11-05 | Protocol created; eval_episodes = 2400 from the variance study | Phase 2 |
+| 2026-11-06 | §12 rules for learned agents (defaults, seeds, budget rule, tuning grid, selection, n re-check) fixed before any Phase 3 run | Phase 3, approved T1–T6 |
+| 2026-11-06 | §12.6 filled in: budget 300K, selected SlateQ / learned-myopic configs, eval_episodes stays 2400 | Outcome of the pre-registered rules 12.3–12.5 |

@@ -5,6 +5,9 @@ results/raw/<experiment>/<config_hash>/seed<k>/
     meta.json     provenance: git SHA (+dirty), uv.lock hash, versions, host, times, summary
     episodes.csv  one row per evaluation episode
     traces.jsonl  per-step traces of the first `trace_episodes` eval episodes (optional)
+    curves.csv    learning curve on the tune stream (learning agents)
+    diagnostics.csv  loss / Q / epsilon / replay / target-sync log (learning agents)
+    model.pt      final network + optimiser state (learning agents; never committed)
     run.log       log of this run
     error.json    only if the run failed
     DONE          written LAST; its presence is the only signal that a run is complete
@@ -106,6 +109,16 @@ class RunDir:
         rows = [r.to_row() for r in records]
         with (self.path / "episodes.csv").open("w", newline="", encoding="utf-8") as f:
             w = csv.DictWriter(f, fieldnames=list(rows[0]))
+            w.writeheader()
+            w.writerows(rows)
+
+    def write_csv(self, name: str, rows: list[dict]) -> None:
+        """Generic CSV writer (curves.csv, diagnostics.csv); no file for an empty list."""
+        if not rows:
+            return
+        fields = list(dict.fromkeys(k for r in rows for k in r))
+        with (self.path / name).open("w", newline="", encoding="utf-8") as f:
+            w = csv.DictWriter(f, fieldnames=fields)
             w.writeheader()
             w.writerows(rows)
 

@@ -35,7 +35,7 @@ class RecordingAgent(Agent):
         self.rewards.append(reward)
         return self._slate()
 
-    def end_episode(self, reward, observation):
+    def end_episode(self, reward, observation, truncated=False):
         self.calls.append("end")
         self.rewards.append(reward)
 

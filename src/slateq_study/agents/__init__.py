@@ -7,11 +7,14 @@ from typing import Any
 from slateq_study.agents.base import Agent
 from slateq_study.agents.oracle import OracleMyopicAgent
 from slateq_study.agents.random import RandomAgent
+from slateq_study.agents.slateq import LearnedMyopicAgent, SlateQAgent
 from slateq_study.agents.testing import FailingAgent
 
 AGENTS: dict[str, type[Agent]] = {
     RandomAgent.name: RandomAgent,
     OracleMyopicAgent.name: OracleMyopicAgent,
+    SlateQAgent.name: SlateQAgent,
+    LearnedMyopicAgent.name: LearnedMyopicAgent,
     FailingAgent.name: FailingAgent,
 }
 

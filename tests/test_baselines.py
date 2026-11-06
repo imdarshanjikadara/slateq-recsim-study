@@ -37,8 +37,8 @@ class FirstObsRecorder(Agent):
     def step(self, reward, observation):
         return self.inner.step(reward, observation)
 
-    def end_episode(self, reward, observation):
-        self.inner.end_episode(reward, observation)
+    def end_episode(self, reward, observation, truncated=False):
+        self.inner.end_episode(reward, observation, truncated)
 
 
 def test_common_random_numbers_same_user_and_candidates_at_step0():

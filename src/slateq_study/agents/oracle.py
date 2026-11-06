@@ -57,5 +57,5 @@ class OracleMyopicAgent(Agent):
     def step(self, reward: float, observation: Observation) -> np.ndarray:
         return self._act(observation)
 
-    def end_episode(self, reward: float, observation: Observation) -> None:
+    def end_episode(self, reward: float, observation: Observation, truncated: bool = False) -> None:
         self._impl = None  # never reuse a previous user's state

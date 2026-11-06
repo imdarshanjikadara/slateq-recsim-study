@@ -1,0 +1,219 @@
+{
+  "budget": 300000,
+  "grid": [
+    {
+      "agent": "slateq",
+      "learning_rate": 0.0001,
+      "target_update_period": 1000,
+      "per_seed": [
+        169.89537313407686,
+        169.85706996806792
+      ],
+      "mean": 169.87622155107238
+    },
+    {
+      "agent": "slateq",
+      "learning_rate": 0.0001,
+      "target_update_period": 4000,
+      "per_seed": [
+        170.03360563494667,
+        169.86882048375182
+      ],
+      "mean": 169.95121305934924
+    },
+    {
+      "agent": "slateq",
+      "learning_rate": 0.0001,
+      "target_update_period": 8000,
+      "per_seed": [
+        170.23455946356188,
+        169.60899820705072
+      ],
+      "mean": 169.9217788353063
+    },
+    {
+      "agent": "slateq",
+      "learning_rate": 0.00025,
+      "target_update_period": 1000,
+      "per_seed": [
+        170.37238207340312,
+        169.50553751117067
+      ],
+      "mean": 169.93895979228688
+    },
+    {
+      "agent": "slateq",
+      "learning_rate": 0.00025,
+      "target_update_period": 4000,
+      "per_seed": [
+        170.33538394160095,
+        169.52655482423472
+      ],
+      "mean": 169.93096938291785
+    },
+    {
+      "agent": "slateq",
+      "learning_rate": 0.00025,
+      "target_update_period": 8000,
+      "per_seed": [
+        170.03020830534152,
+        169.60486667492393
+      ],
+      "mean": 169.81753749013274
+    },
+    {
+      "agent": "slateq",
+      "learning_rate": 0.001,
+      "target_update_period": 1000,
+      "per_seed": [
+        170.7899144831309,
+        169.65340010370304
+      ],
+      "mean": 170.22165729341697
+    },
+    {
+      "agent": "slateq",
+      "learning_rate": 0.001,
+      "target_update_period": 4000,
+      "per_seed": [
+        170.376803293852,
+        169.33950367775861
+      ],
+      "mean": 169.8581534858053
+    },
+    {
+      "agent": "slateq",
+      "learning_rate": 0.001,
+      "target_update_period": 8000,
+      "per_seed": [
+        169.73597959808828,
+        169.2774943538438
+      ],
+      "mean": 169.50673697596602
+    },
+    {
+      "agent": "learned_myopic",
+      "learning_rate": 0.0001,
+      "target_update_period": 1000,
+      "per_seed": [
+        168.4858573468436,
+        168.09049152066495
+      ],
+      "mean": 168.28817443375428
+    },
+    {
+      "agent": "learned_myopic",
+      "learning_rate": 0.0001,
+      "target_update_period": 4000,
+      "per_seed": [
+        168.4858573468436,
+        168.09049152066495
+      ],
+      "mean": 168.28817443375428
+    },
+    {
+      "agent": "learned_myopic",
+      "learning_rate": 0.0001,
+      "target_update_period": 8000,
+      "per_seed": [
+        168.4858573468436,
+        168.09049152066495
+      ],
+      "mean": 168.28817443375428
+    },
+    {
+      "agent": "learned_myopic",
+      "learning_rate": 0.00025,
+      "target_update_period": 1000,
+      "per_seed": [
+        168.94424467612893,
+        168.02046993665377
+      ],
+      "mean": 168.48235730639135
+    },
+    {
+      "agent": "learned_myopic",
+      "learning_rate": 0.00025,
+      "target_update_period": 4000,
+      "per_seed": [
+        168.94424467612893,
+        168.02046993665377
+      ],
+      "mean": 168.48235730639135
+    },
+    {
+      "agent": "learned_myopic",
+      "learning_rate": 0.00025,
+      "target_update_period": 8000,
+      "per_seed": [
+        168.94424467612893,
+        168.02046993665377
+      ],
+      "mean": 168.48235730639135
+    },
+    {
+      "agent": "learned_myopic",
+      "learning_rate": 0.001,
+      "target_update_period": 1000,
+      "per_seed": [
+        168.72443059076457,
+        167.89414147072682
+      ],
+      "mean": 168.30928603074568
+    },
+    {
+      "agent": "learned_myopic",
+      "learning_rate": 0.001,
+      "target_update_period": 4000,
+      "per_seed": [
+        168.72443059076457,
+        167.89414147072682
+      ],
+      "mean": 168.30928603074568
+    },
+    {
+      "agent": "learned_myopic",
+      "learning_rate": 0.001,
+      "target_update_period": 8000,
+      "per_seed": [
+        168.72443059076457,
+        167.89414147072682
+      ],
+      "mean": 168.30928603074568
+    }
+  ],
+  "selected": {
+    "slateq": {
+      "learning_rate": 0.001,
+      "target_update_period": 1000,
+      "mean": 170.22165729341697
+    },
+    "learned_myopic": {
+      "learning_rate": 0.00025,
+      "target_update_period": 1000,
+      "mean": 168.48235730639135
+    }
+  },
+  "references": {
+    "random": [
+      160.88301968660843,
+      160.2785621782042
+    ],
+    "oracle_myopic": [
+      168.7424136322249,
+      168.16237931200982
+    ]
+  },
+  "episode_recheck": {
+    "sd_diff_per_seed": [
+      7.165849379380931,
+      6.382098647943255
+    ],
+    "n_needed_per_seed": [
+      206,
+      163
+    ],
+    "eval_episodes": 2400,
+    "rule": "max(2400, ceil(max n / 50) * 50) (PROTOCOL 12.5)"
+  }
+}

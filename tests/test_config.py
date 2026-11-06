@@ -70,3 +70,38 @@ def test_smoke_config_loads():
 
     c = load_config(REPO_ROOT / "configs" / "smoke.yaml")
     assert c.eval_episodes == 3 and c.agent.name == "random"
+
+
+def test_learning_agents_need_training_and_others_refuse_it():
+    with pytest.raises(ConfigError):
+        from_dict({**BASE, "agent": {"name": "slateq"}})  # train_steps missing
+    with pytest.raises(ConfigError):
+        from_dict({**BASE, "train_steps": 100})  # random agent cannot train
+    c = from_dict({**BASE, "agent": {"name": "learned_myopic"}, "train_steps": 1000})
+    assert c.train_steps == 1000
+
+
+def test_eval_stream_restricted():
+    assert from_dict({**BASE, "eval_stream": "tune"}).eval_stream == "tune"
+    for bad in ("train", "test"):
+        with pytest.raises(ConfigError):
+            from_dict({**BASE, "eval_stream": bad})
+
+
+def test_phase2_hashes_unchanged_by_new_default_fields():
+    """Fields added in Phase 3 must not change the hash of earlier configs (run dirs on disk)."""
+    smoke = {
+        "experiment": "smoke",
+        "env": {
+            "num_candidates": 10,
+            "slate_size": 3,
+            "resample_documents": True,
+            "max_steps": 1000,
+        },
+        "agent": {"name": "random"},
+        "train_steps": 0,
+        "eval_episodes": 3,
+    }
+    assert from_dict(smoke).config_hash == "b89f083ec0ee"
+    c = from_dict({**smoke, "eval_stream": "tune"})
+    assert c.config_hash != "b89f083ec0ee"

@@ -1,0 +1,139 @@
+{
+  "cell": [
+    5,
+    2
+  ],
+  "seeds": [
+    100,
+    101
+  ],
+  "per_seed": [
+    {
+      "seed": 100,
+      "slateq": {
+        "vs_random": {
+          "n": 500,
+          "mean_diff": 8.782143486353368,
+          "sd_diff": 14.898604497224614,
+          "se_diff": 0.6662858485135662
+        },
+        "plumbing_ok": true,
+        "final_diagnostics": {
+          "training_steps": 300000,
+          "updates": 70000,
+          "epsilon": 0.01,
+          "replay_size": 300000,
+          "target_syncs": 35,
+          "mean_loss": 1.6000961173474788,
+          "mean_q_clicked": 8.86475556564331,
+          "mean_target": 8.863749300479888,
+          "mean_grad_norm": 8.18738119828701,
+          "mean_clicked_frac": 0.5610625,
+          "max_abs_q_clicked": 9.337733268737793
+        },
+        "tune_reward": 163.50634278824953
+      },
+      "learned_myopic": {
+        "vs_random": {
+          "n": 500,
+          "mean_diff": 8.165675314669132,
+          "sd_diff": 14.827776451796847,
+          "se_diff": 0.6631183220277677
+        },
+        "plumbing_ok": true,
+        "final_diagnostics": {
+          "training_steps": 300000,
+          "updates": 70000,
+          "epsilon": 0.01,
+          "replay_size": 300000,
+          "target_syncs": 35,
+          "mean_loss": 0.1365234097919747,
+          "mean_q_clicked": 3.95271609044075,
+          "mean_target": 3.9537379524707794,
+          "mean_grad_norm": 1.99138214093633,
+          "mean_clicked_frac": 0.5673125,
+          "max_abs_q_clicked": 4.0313568115234375
+        },
+        "tune_reward": 162.88987461656527
+      },
+      "oracle_vs_random": {
+        "n": 500,
+        "mean_diff": 8.268375180110173,
+        "sd_diff": 14.892252102099398,
+        "se_diff": 0.6660017607671679
+      },
+      "learned_myopic_recovery_of_oracle_gain": 0.9875791962502998
+    },
+    {
+      "seed": 101,
+      "slateq": {
+        "vs_random": {
+          "n": 500,
+          "mean_diff": 9.927881573513714,
+          "sd_diff": 14.87166393453824,
+          "se_diff": 0.6650810299231897
+        },
+        "plumbing_ok": true,
+        "final_diagnostics": {
+          "training_steps": 300000,
+          "updates": 70000,
+          "epsilon": 0.01,
+          "replay_size": 300000,
+          "target_syncs": 35,
+          "mean_loss": 1.5971081217825414,
+          "mean_q_clicked": 8.667964812278747,
+          "mean_target": 8.666901819229127,
+          "mean_grad_norm": 8.381144883275033,
+          "mean_clicked_frac": 0.5621875,
+          "max_abs_q_clicked": 9.14292049407959
+        },
+        "tune_reward": 163.77278885707017
+      },
+      "learned_myopic": {
+        "vs_random": {
+          "n": 500,
+          "mean_diff": 8.91100315875744,
+          "sd_diff": 14.317079450037845,
+          "se_diff": 0.6402792577909985
+        },
+        "plumbing_ok": true,
+        "final_diagnostics": {
+          "training_steps": 300000,
+          "updates": 70000,
+          "epsilon": 0.01,
+          "replay_size": 300000,
+          "target_syncs": 35,
+          "mean_loss": 0.14603323321462086,
+          "mean_q_clicked": 3.9495593082904814,
+          "mean_target": 3.9496967425346377,
+          "mean_grad_norm": 2.1314807679671794,
+          "mean_clicked_frac": 0.565875,
+          "max_abs_q_clicked": 4.021015167236328
+        },
+        "tune_reward": 162.7559104423139
+      },
+      "oracle_vs_random": {
+        "n": 500,
+        "mean_diff": 9.307354966709354,
+        "sd_diff": 14.372602409631911,
+        "se_diff": 0.6427623200302846
+      },
+      "learned_myopic_recovery_of_oracle_gain": 0.9574152044947689
+    }
+  ],
+  "checks": {
+    "1_plumbing": true,
+    "2_beats_random": true,
+    "3_calibration_recovery_mean": 0.9724972003725343,
+    "3_calibration": true,
+    "4_q_scale_learned_myopic": [
+      3.95271609044075,
+      3.9495593082904814
+    ],
+    "4_q_scale_slateq": [
+      8.86475556564331,
+      8.667964812278747
+    ],
+    "4_q_scale": true
+  }
+}

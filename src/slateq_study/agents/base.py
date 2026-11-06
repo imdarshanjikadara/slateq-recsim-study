@@ -3,7 +3,7 @@
 Call order for one episode (enforced by harness.run_episode):
     slate = agent.begin_episode(obs0)
     repeat:  obs, r, done = env.step(slate)
-             if episode over: agent.end_episode(r, obs); stop
+             if episode over: agent.end_episode(r, obs, truncated); stop
              slate = agent.step(r, obs)
 so the final reward always reaches the agent through end_episode.
 """
@@ -40,7 +40,9 @@ class Agent(ABC):
     @abstractmethod
     def step(self, reward: float, observation: Observation) -> np.ndarray: ...
 
-    def end_episode(self, reward: float, observation: Observation) -> None:  # noqa: B027
+    def end_episode(  # noqa: B027
+        self, reward: float, observation: Observation, truncated: bool = False
+    ) -> None:
         """Optional hook; learning agents use it to store the terminal transition."""
 
     def attach_true_state(self, env) -> None:
