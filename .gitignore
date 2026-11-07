@@ -8,3 +8,10 @@ checkpoints/
 *.pt
 .pytest_cache/
 .ruff_cache/
+
+# pilot / reproduce-small outputs (never analysed)
+results/pilot_analysis/
+results/small/
+results/pilot/
+results/pilot_rq3/
+results/mini/

@@ -1,0 +1,16 @@
+# PILOT for building the analysis / figures / web pipeline before the real sweep finishes.
+# Short training, few episodes: numbers are meaningless; every figure made from it is watermarked.
+experiment: pilot
+pilot: true
+grid:
+  num_candidates: [5, 10]
+  slate_size: [2, 3]
+seeds: [900, 901, 902]
+agents: [random, oracle_myopic, learned_myopic, slateq]
+train_steps: 21000
+eval_episodes: 30
+trace_episodes: 2
+curves:
+  cells: [[10, 3]]
+  eval_every: 7000
+  curve_episodes: 5

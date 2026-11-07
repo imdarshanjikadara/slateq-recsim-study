@@ -37,9 +37,20 @@ RESULTS = io.REPO_ROOT / "results"
 RUN_ONE = io.REPO_ROOT / "scripts" / "run_one.py"
 LEARNED = ("slateq", "learned_myopic")
 SPEC_KEYS = {
-    "experiment", "description", "grid", "controls", "seeds", "agents", "conditions",
-    "trace_episodes", "curves", "pilot", "train_steps", "eval_episodes", "frozen_from",
-}  # fmt: skip
+    "experiment",
+    "description",
+    "grid",
+    "controls",
+    "seeds",
+    "agents",
+    "conditions",
+    "trace_episodes",
+    "curves",
+    "pilot",
+    "train_steps",
+    "eval_episodes",
+    "frozen_from",
+}
 OK_EXIT = (0, 3)  # completed now / already completed
 CLEAN_FAIL_EXIT = (1, 2)  # run failed and wrote error.json / bad config: never retried
 
@@ -88,8 +99,10 @@ def load_spec(path: Path) -> dict:
         if c["choice_model"] not in CHOICE_MODELS:
             raise SpecError(f"unknown choice model {c['choice_model']!r}")
     if not spec.get("pilot") and ("train_steps" in spec or "eval_episodes" in spec):
-        raise SpecError("train_steps / eval_episodes come from the frozen Phase 3 files; "
-                        "overrides are allowed only in a spec marked pilot: true")  # fmt: skip
+        raise SpecError(
+            "train_steps / eval_episodes come from the frozen Phase 3 files; "
+            "overrides are allowed only in a spec marked pilot: true"
+        )
     if not spec.get("pilot") and set(spec["seeds"]) - {0, 1, 2, 3, 4}:
         raise SpecError("non-pilot sweeps use the reserved final run seeds 0-4 (PROTOCOL 3)")
     return spec
@@ -164,8 +177,17 @@ def manifest(spec: dict, results_root: Path = RESULTS) -> list[Job]:
                             cfg["curve_episodes"] = int(curves["curve_episodes"])
                     from_dict(cfg)  # validate now, not in a subprocess hours later
                     name = cond["name"]
-                    per_seed.append(Job(cfg, int(seed), agent, (n, k), name, control,
-                                        key=f"{agent}|N{n}k{k}|{name}|seed{seed}"))  # fmt: skip
+                    per_seed.append(
+                        Job(
+                            cfg,
+                            int(seed),
+                            agent,
+                            (n, k),
+                            name,
+                            control,
+                            key=f"{agent}|N{n}k{k}|{name}|seed{seed}",
+                        )
+                    )
             per_seed.sort(key=lambda j: (not j.learned, -j.cell[0], -j.cell[1]))
             jobs += per_seed
     keys = [j.key for j in jobs]
@@ -179,10 +201,13 @@ def estimate_job_sec(job: Job, timing: dict | None) -> float | None:
     if not timing:
         return None
     row = next(
-        (r for r in timing["cells"]
-         if (r.get("num_candidates"), r.get("slate_size")) == job.cell and "error" not in r),
+        (
+            r
+            for r in timing["cells"]
+            if (r.get("num_candidates"), r.get("slate_size")) == job.cell and "error" not in r
+        ),
         None,
-    )  # fmt: skip
+    )
     if row is None:
         return None
     sec = 0.0
@@ -249,8 +274,12 @@ def check_code_state(exp_dir: Path, allow_dirty: bool) -> dict:
     else:
         exp_dir.mkdir(parents=True, exist_ok=True)
         state_file.write_text(
-            json.dumps({"git_sha": prov["git_sha"], "git_dirty": prov["git_dirty"],
-                        "started": io.now()}, indent=2), "utf-8")  # fmt: skip
+            json.dumps(
+                {"git_sha": prov["git_sha"], "git_dirty": prov["git_dirty"], "started": io.now()},
+                indent=2,
+            ),
+            "utf-8",
+        )
     return prov
 
 
@@ -307,11 +336,20 @@ def run_sweep(
         cfg_path = _config_file(job, results_root)
         limit = timeout_sec or max(1800.0, 3 * est.get(job.key, 3600.0))
         for attempt in (1, 2):
-            cmd = [sys.executable, str(RUN_ONE), "--config", str(cfg_path),
-                   "--seed", str(job.seed), "--results-root", str(results_root)]  # fmt: skip
+            cmd = [
+                sys.executable,
+                str(RUN_ONE),
+                "--config",
+                str(cfg_path),
+                "--seed",
+                str(job.seed),
+                "--results-root",
+                str(results_root),
+            ]
             ts = time.time()
-            proc = subprocess.Popen(cmd, cwd=io.REPO_ROOT, stdout=subprocess.DEVNULL,
-                                    stderr=subprocess.DEVNULL)  # fmt: skip
+            proc = subprocess.Popen(
+                cmd, cwd=io.REPO_ROOT, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL
+            )
             with lock:
                 live.add(proc)
             try:

@@ -69,9 +69,18 @@ def test_oracle_ranks_by_true_affinity_in_every_condition(cm, ncm):
 
 
 def test_default_no_click_mass_keeps_existing_hashes():
-    base = {"experiment": "smoke", "env": {"num_candidates": 10, "slate_size": 3,
-            "resample_documents": True, "max_steps": 1000}, "agent": {"name": "random"},
-            "train_steps": 0, "eval_episodes": 3}  # fmt: skip
+    base = {
+        "experiment": "smoke",
+        "env": {
+            "num_candidates": 10,
+            "slate_size": 3,
+            "resample_documents": True,
+            "max_steps": 1000,
+        },
+        "agent": {"name": "random"},
+        "train_steps": 0,
+        "eval_episodes": 3,
+    }
     assert from_dict(base).config_hash == "b89f083ec0ee"
     explicit = {**base, "env": {**base["env"], "no_click_mass": 1.0}}
     assert from_dict(explicit).config_hash == "b89f083ec0ee"

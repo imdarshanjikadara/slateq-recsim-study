@@ -72,8 +72,16 @@ def test_non_pilot_spec_cannot_override_frozen_values(tmp_path):
 
 def test_non_pilot_spec_must_use_final_seeds(tmp_path):
     p = tmp_path / "s.yaml"
-    p.write_text(yaml.safe_dump({"experiment": "x", "grid": {"num_candidates": [5],
-                 "slate_size": [2]}, "seeds": [100], "agents": ["random"]}))  # fmt: skip
+    p.write_text(
+        yaml.safe_dump(
+            {
+                "experiment": "x",
+                "grid": {"num_candidates": [5], "slate_size": [2]},
+                "seeds": [100],
+                "agents": ["random"],
+            }
+        )
+    )
     with pytest.raises(sweep.SpecError):
         sweep.load_spec(p)
 
@@ -95,8 +103,9 @@ def test_runner_end_to_end_resume_and_failure_isolation(tmp_path):
     root = _frozen_root(tmp_path)
     spec = sweep.load_spec(_spec(tmp_path, failing=True))
     jobs = sweep.manifest(spec, root)
-    status = sweep.run_sweep(jobs, workers=2, results_root=root,
-                             status_file=root / "raw" / "t_sweep" / "_status.csv")  # fmt: skip
+    status = sweep.run_sweep(
+        jobs, workers=2, results_root=root, status_file=root / "raw" / "t_sweep" / "_status.csv"
+    )
     by_agent = {j.key: j.agent for j in jobs}
     assert all(s == "ok" for k, s in status.items() if by_agent[k] == "random")
     assert all(s == "failed" for k, s in status.items() if by_agent[k] != "random")  # no retry
@@ -109,8 +118,11 @@ def test_runner_end_to_end_resume_and_failure_isolation(tmp_path):
     again = sweep.run_sweep([ok_job], workers=1, results_root=root)
     assert again[ok_job.key] == "ok" and done.read_text() == stamp
     # same job, same eval env seeds; different run seeds -> different env seeds
-    eps = {j.seed: (sweep.run_dir(j, root) / "episodes.csv").read_text() for j in jobs
-           if j.agent == "random"}  # fmt: skip
+    eps = {
+        j.seed: (sweep.run_dir(j, root) / "episodes.csv").read_text()
+        for j in jobs
+        if j.agent == "random"
+    }
     assert eps[950] != eps[951]
 
 

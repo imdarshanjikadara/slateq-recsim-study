@@ -1,0 +1,15 @@
+# PILOT companion of pilot.yaml for the RQ3 analysis path (numbers meaningless; watermarked).
+experiment: pilot_rq3
+pilot: true
+grid:
+  num_candidates: [10]
+  slate_size: [3]
+seeds: [900, 901, 902]
+agents: [random, oracle_myopic, learned_myopic, slateq]
+train_steps: 21000
+eval_episodes: 30
+trace_episodes: 2
+conditions:
+  - {name: mild_noclick3, choice_model: multinomial_proportional, no_click_mass: 3.0}
+  - {name: moderate_logit, choice_model: multinomial_logit, no_click_mass: 1.0}
+  - {name: severe_cascade, choice_model: proportional_cascade, no_click_mass: 1.0}

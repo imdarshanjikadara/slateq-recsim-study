@@ -51,19 +51,27 @@ def main() -> int:
         return 0
 
     status = {j.key: sweep.job_status(j, args.results_root) for j in jobs}
-    todo = [j for j in jobs if status[j.key] == "missing"
-            or (status[j.key] == "failed" and args.retry_failed)]  # fmt: skip
+    todo = [
+        j
+        for j in jobs
+        if status[j.key] == "missing" or (status[j.key] == "failed" and args.retry_failed)
+    ]
 
     if args.dry_run:
         print(f"experiment {exp}{' (PILOT)' if spec.get('pilot') else ''}: {len(jobs)} jobs")
         print(f"  status now: {dict(Counter(status.values()))}; to run: {len(todo)}")
         by = Counter((j.agent, j.cell, j.condition, j.control) for j in jobs)
         for (agent, cell, cm, control), n in sorted(by.items()):
-            e = est.get(next(j.key for j in jobs if (j.agent, j.cell, j.condition) ==
-                             (agent, cell, cm)))  # fmt: skip
-            print(f"  {agent:15s} N={cell[0]:<3d} k={cell[1]}  {cm:10s}"
-                  f"{' control' if control else '        '}  x{n} seeds  "
-                  f"est {e / 60:.1f} min/job" if e else "  est n/a")  # fmt: skip
+            e = est.get(
+                next(j.key for j in jobs if (j.agent, j.cell, j.condition) == (agent, cell, cm))
+            )
+            print(
+                f"  {agent:15s} N={cell[0]:<3d} k={cell[1]}  {cm:10s}"
+                f"{' control' if control else '        '}  x{n} seeds  "
+                f"est {e / 60:.1f} min/job"
+                if e
+                else "  est n/a"
+            )
         secs = [est[j.key] for j in todo if j.key in est]
         if secs:
             cpu_h = sum(secs) / 3600
@@ -96,8 +104,10 @@ def main() -> int:
         return 130
     rows = sweep.collect(jobs, args.results_root)
     sweep.write_rows(out_dir / "runs.csv", rows)
-    print(f"done: {dict(Counter(result.values()))}; runs.csv: "
-          f"{dict(Counter(r['status'] for r in rows))}")  # fmt: skip
+    print(
+        f"done: {dict(Counter(result.values()))}; runs.csv: "
+        f"{dict(Counter(r['status'] for r in rows))}"
+    )
     return 0 if all(s == "ok" for s in result.values()) else 1
 
 

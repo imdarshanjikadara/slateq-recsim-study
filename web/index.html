@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SlateQ vs Myopic</title>
+  <meta name="description" content="Does long-term (SlateQ) slate recommendation beat myopic recommendation in a simulated video platform? Results of an MS course project at CU Denver.">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/plotly.js-dist-min@2.35.2/plotly.min.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="wrap">
+      <p class="eyebrow">CSCI 5933 Reinforcement Learning &middot; University of Colorado Denver</p>
+      <h1>Recommending for the whole session, not the next click</h1>
+      <p class="lede">SlateQ vs myopic slate recommendation in RecSim Interest Evolution, a simulated video platform.</p>
+      <nav class="tabs" role="tablist" aria-label="Sections">
+        <button role="tab" data-tab="overview" aria-selected="true">Overview</button>
+        <button role="tab" data-tab="rq1">RQ1: Long-term gain</button>
+        <button role="tab" data-tab="rq2">RQ2: Catalog &amp; slate size</button>
+        <button role="tab" data-tab="rq3">RQ3: Wrong user model</button>
+        <button role="tab" data-tab="replay">Replay a user</button>
+        <button role="tab" data-tab="method">Method</button>
+      </nav>
+    </div>
+  </header>
+
+  <div id="pilot-banner" class="banner" hidden>
+    PILOT DATA. These numbers come from a short plumbing run and are <strong>not results</strong>.
+  </div>
+
+  <main class="wrap">
+    <!-- OVERVIEW -->
+    <section id="overview" class="panel" role="tabpanel">
+      <div class="grid-2">
+        <div>
+          <h2>The question</h2>
+          <p>A recommender shows a <em>slate</em> of k videos chosen from N candidates. A <strong>myopic</strong>
+            recommender shows whatever is most likely to be clicked <em>now</em>. But in the simulator, a user has a
+            limited time budget: watching a <strong>high-quality</strong> video gives some time back, so the session
+            lasts longer. <strong>SlateQ</strong> is a reinforcement-learning method that values each item by its
+            long-term effect on the session, and it stays tractable because it decomposes the slate's value into
+            per-item values.</p>
+          <ol class="rqs">
+            <li><strong>RQ1</strong> Does SlateQ give more total watch time per session than a myopic recommender?</li>
+            <li><strong>RQ2</strong> How does that gap change with catalog size N and slate size k?</li>
+            <li><strong>RQ3</strong> How sensitive is SlateQ's advantage to a wrong assumption about how users choose?</li>
+          </ol>
+        </div>
+        <div>
+          <h2>How a session works</h2>
+          <figure class="diagram" aria-label="Session loop diagram">
+            <svg viewBox="0 0 420 250" role="img" aria-labelledby="loop-title">
+              <title id="loop-title">The recommender picks k of N candidates; the user clicks one or none; watch time is the reward; quality changes the remaining time budget and the user's interests.</title>
+              <defs><marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" class="arrowhead"/></marker></defs>
+              <rect class="node" x="10" y="20" width="150" height="56" rx="10"/>
+              <text x="85" y="44" class="t1">N candidate videos</text><text x="85" y="62" class="t2">redrawn every step</text>
+              <rect class="node accent" x="250" y="20" width="160" height="56" rx="10"/>
+              <text x="330" y="44" class="t1">Recommender</text><text x="330" y="62" class="t2">shows a slate of k</text>
+              <rect class="node" x="250" y="150" width="160" height="70" rx="10"/>
+              <text x="330" y="174" class="t1">Simulated user</text><text x="330" y="192" class="t2">clicks one (or none)</text><text x="330" y="208" class="t2">by interest</text>
+              <rect class="node" x="10" y="150" width="150" height="70" rx="10"/>
+              <text x="85" y="174" class="t1">Reward = watch time</text><text x="85" y="192" class="t2">quality refunds time;</text><text x="85" y="208" class="t2">interests drift</text>
+              <path class="edge" d="M160 48 H246" marker-end="url(#arr)"/>
+              <path class="edge" d="M330 76 V146" marker-end="url(#arr)"/>
+              <path class="edge" d="M250 185 H164" marker-end="url(#arr)"/>
+              <path class="edge" d="M85 150 C85 110 200 110 250 60" marker-end="url(#arr)"/>
+              <text x="166" y="104" class="t2">next step</text>
+            </svg>
+          </figure>
+        </div>
+      </div>
+      <h2>Headline numbers</h2>
+      <div id="kpis" class="kpis"></div>
+      <p class="note" id="overview-note"></p>
+    </section>
+
+    <!-- RQ1 -->
+    <section id="rq1" class="panel" role="tabpanel" hidden>
+      <h2>RQ1: Does planning for the session pay off?</h2>
+      <p class="sub" id="rq1-sub"></p>
+      <div class="grid-2">
+        <div class="card"><h3>Total watch time per session</h3><div id="rq1-agents" class="plot"></div>
+          <p class="cap">Large marker: mean over run seeds. Bar: seed-bootstrap 95% CI. Small dots: individual seeds.</p></div>
+        <div class="card"><h3>Paired differences on the same users</h3><div id="rq1-gaps" class="plot"></div>
+          <p class="cap">Every policy meets the same simulated users (common random numbers). Dots: per-seed differences; bar: 95% CI.</p></div>
+        <div class="card"><h3>Learning curves</h3><div id="rq1-curves" class="plot"></div>
+          <p class="cap">Mean over seeds of the reward on held-out tuning users during training; band = &plusmn;1 SD.</p></div>
+        <div class="card"><h3>How long sessions last</h3><div id="rq1-lengths" class="plot"></div>
+          <p class="cap">Fraction of sessions that ended by a given step (all evaluation sessions).</p></div>
+      </div>
+      <div class="card"><h3>All metrics at N=10, k=3</h3><div id="rq1-table" class="table-wrap"></div></div>
+    </section>
+
+    <!-- RQ2 -->
+    <section id="rq2" class="panel" role="tabpanel" hidden>
+      <h2>RQ2: Does the gap grow with more candidates or bigger slates?</h2>
+      <div class="controls">
+        <label>Comparison <select id="rq2-cmp"></select></label>
+      </div>
+      <div class="grid-2">
+        <div class="card"><h3>Gap over (N, k)</h3><div id="rq2-heat" class="plot tall"></div>
+          <p class="cap">Mean paired gap over seeds; hover for the 95% CI and seed count. Blue: first policy higher; red: lower.</p></div>
+        <div class="card"><h3>Gap vs catalog size</h3><div id="rq2-lines" class="plot tall"></div>
+          <p class="cap">One line per slate size; bars are seed-bootstrap 95% CIs.</p></div>
+      </div>
+    </section>
+
+    <!-- RQ3 -->
+    <section id="rq3" class="panel" role="tabpanel" hidden>
+      <h2>RQ3: What if users don't choose the way SlateQ assumes?</h2>
+      <p class="sub">SlateQ always assumes a proportional choice model. We change only the <em>simulated users'</em> true behaviour: more skipping, a logit model, then a position-sensitive cascade.</p>
+      <div class="grid-2">
+        <div class="card"><h3>SlateQ &minus; learned-myopic gap</h3><div id="rq3-gap" class="plot"></div></div>
+        <div class="card"><h3>Absolute watch time per condition</h3><div id="rq3-abs" class="plot"></div></div>
+      </div>
+      <p class="note" id="rq3-note"></p>
+    </section>
+
+    <!-- REPLAY -->
+    <section id="replay" class="panel" role="tabpanel" hidden>
+      <h2>Replay one user under every policy</h2>
+      <p class="sub">The same simulated user (same starting interests and candidate videos) is served by each policy. Step through the session.</p>
+      <div class="controls">
+        <label>Run seed <select id="rp-seed"></select></label>
+        <label>User (eval episode) <select id="rp-ep"></select></label>
+        <button id="rp-play" class="btn" type="button">&#9654; Play</button>
+        <label class="grow">Step <input id="rp-step" type="range" min="0" value="0"><output id="rp-step-out">0</output></label>
+      </div>
+      <div class="card"><div id="rp-budget" class="plot short"></div></div>
+      <div id="rp-cols" class="cols"></div>
+      <p class="cap">Card colour = the video's hidden quality (red low, blue high), which agents never observe. Outlined card = clicked. Interest strip = the user's interest in each of 20 topics at this step.</p>
+    </section>
+
+    <!-- METHOD -->
+    <section id="method" class="panel" role="tabpanel" hidden>
+      <h2>How the evidence was produced</h2>
+      <div class="grid-2">
+        <div>
+          <h3>Policies</h3>
+          <ul>
+            <li><strong>SlateQ</strong> learns per-item long-term values (&gamma; = 0.99) and picks the top-k by click-probability &times; value.</li>
+            <li><strong>Learned myopic</strong> is the identical agent with &gamma; = 0: same network, data and budget, so only the planning horizon differs. This is the primary comparison.</li>
+            <li><strong>Oracle myopic</strong> reads the user's true interests and ranks by click probability: the best a click-maximiser can do. It has privileged information.</li>
+            <li><strong>Random</strong> picks k candidates uniformly.</li>
+          </ul>
+          <h3>Protocol (fixed before the runs)</h3>
+          <ul id="method-protocol"></ul>
+        </div>
+        <div>
+          <h3>Limitations</h3>
+          <ul>
+            <li>Simulated users, not real ones: results describe RecSim Interest Evolution only.</li>
+            <li>Candidates are redrawn every step, so "catalog size" means candidates per step.</li>
+            <li>SlateQ is a PyTorch re-implementation of RecSim's TF agent, tested against its scoring functions, not run side by side.</li>
+            <li>Following the reference implementation, the no-click option carries no continuation value, which shortens SlateQ's effective horizon.</li>
+            <li>Five run seeds: we report effect sizes and confidence intervals, not significance tests.</li>
+          </ul>
+          <h3>Reproduce</h3>
+          <p>Code, protocol, raw-to-figure scripts: <a href="https://github.com/imdarshanjikadara/slateq-recsim-study">github.com/imdarshanjikadara/slateq-recsim-study</a></p>
+          <p class="note" id="method-sha"></p>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer class="wrap foot">Darshankumar Jikadara &middot; MS Computer Science, University of Colorado Denver</footer>
+</body>
+</html>

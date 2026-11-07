@@ -1,0 +1,16 @@
+# `make reproduce-small`: the whole pipeline end to end in a few minutes on a laptop CPU.
+# PILOT: 1 cell x 4 agents x 2 seeds, short training. Numbers are meaningless; figures watermarked.
+experiment: small
+pilot: true
+grid:
+  num_candidates: [10]
+  slate_size: [3]
+seeds: [910, 911]
+agents: [random, oracle_myopic, learned_myopic, slateq]
+train_steps: 21000
+eval_episodes: 30
+trace_episodes: 2
+curves:
+  cells: [[10, 3]]
+  eval_every: 7000
+  curve_episodes: 5
