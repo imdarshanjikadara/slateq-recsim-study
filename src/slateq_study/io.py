@@ -71,6 +71,8 @@ def provenance() -> dict:
     return {
         "git_sha": _git("rev-parse", "HEAD"),
         "git_dirty": bool(status) if status is not None else None,
+        # which paths were modified/untracked when the run started (audit: run code unchanged?)
+        "git_dirty_paths": status.splitlines()[:50] if status else [],
         "recsim_sha": _git("-C", "third_party/recsim", "rev-parse", "HEAD"),
         "uv_lock_sha256": hashlib.sha256(lock.read_bytes()).hexdigest() if lock.exists() else None,
         "python": sys.version.split()[0],
