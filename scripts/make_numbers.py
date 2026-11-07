@@ -172,6 +172,55 @@ def main() -> int:
         "",
     ]
 
+    # RQ2 secondary comparisons and per-agent mechanism columns (pre-registered secondary metrics)
+    L += [
+        "### RQ2: secondary comparisons and mechanism per cell",
+        "",
+        f"Source: `{rel(args.rq2 / 'gaps.csv')}`, `{rel(args.rq2 / 'agents.csv')}`. "
+        "Reward / clicked quality / session length are means over seeds of per-run means.",
+        "",
+        "| N | k | SlateQ - oracle | LM - oracle | reward SlateQ / LM / oracle / random "
+        "| clicked quality SlateQ / LM / oracle | session length SlateQ / LM / oracle |",
+        "|---|---|---|---|---|---|---|",
+    ]
+    for _, r in g2.iterrows():
+        n, k, c = r.num_candidates, r.slate_size, r.control
+
+        def gap(name, n=n, k=k, c=c):
+            x = gp[
+                (gp.condition == "matched")
+                & (gp.num_candidates == n)
+                & (gp.slate_size == k)
+                & (gp.control == c)
+                & (gp.comparison == name)
+            ]
+            if x.empty:
+                return "n/a"
+            x = x.iloc[0]
+            return f"{f(x.mean_diff, sign=True)} ({VERDICT.get(x.verdict, x.verdict)})"
+
+        def col(metric, agents, d, n=n, k=k, c=c):
+            out = []
+            for a in agents:
+                x = ag[
+                    (ag.condition == "matched")
+                    & (ag.num_candidates == n)
+                    & (ag.slate_size == k)
+                    & (ag.control == c)
+                    & (ag.agent == a)
+                ]
+                out.append(f(x.iloc[0][metric], d) if not x.empty else "n/a")
+            return " / ".join(out)
+
+        tri = ("slateq", "learned_myopic", "oracle_myopic")
+        L.append(
+            f"| {n} | {k}{' (control)' if c else ''} | {gap('SlateQ - oracle-myopic')} | "
+            f"{gap('learned-myopic - oracle-myopic')} | "
+            f"{col('mean_total_reward', (*tri, 'random'), 2)} | "
+            f"{col('mean_clicked_quality', tri, 3)} | {col('mean_length', tri, 1)} |"
+        )
+    L.append("")
+
     # RQ3
     rq3_lines = []
     if (args.rq3 / "gaps.csv").exists():
@@ -203,6 +252,26 @@ def main() -> int:
                 r = a3[(a3.condition == rung) & (a3.agent == a)]
                 vals.append(f(r.iloc[0].mean_total_reward) if not r.empty else "n/a")
             L.append(f"| {RUNG[rung]} | " + " | ".join(vals) + " |")
+        L += [
+            "",
+            "Session length and clicked quality (mechanism), same source:",
+            "",
+            "| Condition | session length "
+            + " / ".join(LABEL.values())
+            + " | clicked quality "
+            + " / ".join(LABEL.values())
+            + " |",
+            "|---|---|---|",
+        ]
+        for rung in RUNG:
+            parts = []
+            for metric, d in (("mean_length", 1), ("mean_clicked_quality", 3)):
+                vals = []
+                for a in LABEL:
+                    r = a3[(a3.condition == rung) & (a3.agent == a)]
+                    vals.append(f(r.iloc[0][metric], d) if not r.empty else "n/a")
+                parts.append(" / ".join(vals))
+            L.append(f"| {RUNG[rung]} | " + " | ".join(parts) + " |")
         L.append("")
 
     args.out.write_text("\n".join(L) + "\n", "utf-8")

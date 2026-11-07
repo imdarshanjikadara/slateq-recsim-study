@@ -322,12 +322,36 @@ def f3_heatmap(d: Path, out: Path, pilot: bool) -> None:
     )
 
 
+def _end_labels(ax, ends: list[tuple[str, float, float]], min_gap: float) -> None:
+    """Direct end-of-line labels, nudged apart vertically so they never overlap."""
+    order = sorted(range(len(ends)), key=lambda i: ends[i][2])
+    orig = [ends[i][2] for i in order]
+    groups = [[j] for j in range(len(orig))]  # merge colliding labels, centre each group
+    while True:
+        pos = []
+        for grp in groups:
+            c = sum(orig[j] for j in grp) / len(grp)
+            pos.append([c + (m - (len(grp) - 1) / 2) * min_gap for m in range(len(grp))])
+        hit = next((g for g in range(1, len(groups)) if pos[g][0] - pos[g - 1][-1] < min_gap), None)
+        if hit is None:
+            break
+        groups[hit - 1 : hit + 1] = [groups[hit - 1] + groups[hit]]
+    ys = [y for grp in pos for y in grp]
+    for j, i in enumerate(order):
+        label, x, _ = ends[i]
+        ax.annotate(
+            label, (x, ys[j]), xytext=(8, 0), textcoords="offset points", va="center", fontsize=8
+        )
+
+
 def f4_lines(d: Path, out: Path, pilot: bool) -> None:
     g = _primary_grid(d).dropna(subset=["mean_diff"])
     if g.empty:
         return
     fig, (a1, a2) = plt.subplots(1, 2, figsize=(9.6, 3.6), sharey=True)
     ks, ns = sorted(g.slate_size.unique()), sorted(g.num_candidates.unique())
+    ends1: list[tuple[str, float, float]] = []
+    ends2: list[tuple[str, float, float]] = []
     for i, k in enumerate(ks):
         s = g[g.slate_size == k].sort_values("num_candidates")
         col = ORDINAL[min(len(ORDINAL) - 1, 1 + 2 * i)]
@@ -341,14 +365,7 @@ def f4_lines(d: Path, out: Path, pilot: bool) -> None:
             capsize=3,
             color=col,
         )
-        a1.annotate(
-            f"k={k}",
-            (x[-1], s.mean_diff.iloc[-1]),
-            xytext=(8, 0),
-            textcoords="offset points",
-            va="center",
-            fontsize=8,
-        )
+        ends1.append((f"k={k}", x[-1], s.mean_diff.iloc[-1]))
     a1.set_xscale("log", base=2)
     a1.set_xticks(ns, ns)
     a1.set_xlabel("catalog size N (log scale)")
@@ -366,20 +383,16 @@ def f4_lines(d: Path, out: Path, pilot: bool) -> None:
             capsize=3,
             color=col,
         )
-        a2.annotate(
-            f"N={n}",
-            (s.slate_size.iloc[-1], s.mean_diff.iloc[-1]),
-            xytext=(8, 0),
-            textcoords="offset points",
-            va="center",
-            fontsize=8,
-        )
+        ends2.append((f"N={n}", s.slate_size.iloc[-1], s.mean_diff.iloc[-1]))
     a2.set_xticks(ks, ks)
     a2.set_xlabel("slate size k")
     a2.set_title("F4b  Gap vs slate size")
     for ax in (a1, a2):
         ax.axhline(0, color=INK2, lw=1)
         ax.margins(x=0.15)
+    span = float(g.ci95_high.max() - min(0.0, g.ci95_low.min())) or 1.0
+    for ax, ends in ((a1, ends1), (a2, ends2)):
+        _end_labels(ax, ends, min_gap=0.06 * span)
     save(
         fig,
         out,
