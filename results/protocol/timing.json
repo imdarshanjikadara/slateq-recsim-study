@@ -1,0 +1,130 @@
+{
+  "workers": 4,
+  "bench_seed": 900,
+  "wall_clock_sec": 343.4221863746643,
+  "provenance": {
+    "git_sha": "51e087b6234e5a422009ca5c92a72e54da833a69",
+    "git_dirty": true,
+    "recsim_sha": "55e50e4be736d222ffe8c2477ed1981b40f91605",
+    "uv_lock_sha256": "25a14c7100e704de4870ece090de391cad41bc9efd84aef2060c05ea25a4988e",
+    "python": "3.14.7",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "hostname": "Darshan-PC",
+    "packages": {
+      "numpy": "2.5.4",
+      "torch": "2.15.0+cpu",
+      "gymnasium": "1.4.0",
+      "gin-config": "0.5.0",
+      "absl-py": "2.5.1",
+      "pandas": "3.1.1",
+      "scipy": "1.18.1"
+    }
+  },
+  "cells": [
+    {
+      "num_candidates": 5,
+      "slate_size": 2,
+      "train_sec_per_step": 0.001388433459999942,
+      "eval_sec_per_episode_slateq": 0.04526101600000402,
+      "eval_sec_per_episode_random": 0.01657736599998316
+    },
+    {
+      "num_candidates": 5,
+      "slate_size": 3,
+      "train_sec_per_step": 0.0013891991299999063,
+      "eval_sec_per_episode_slateq": 0.04205301800000598,
+      "eval_sec_per_episode_random": 0.016750612000032562
+    },
+    {
+      "num_candidates": 5,
+      "slate_size": 5,
+      "train_sec_per_step": 0.0014496920400000818,
+      "eval_sec_per_episode_slateq": 0.0442006260000926,
+      "eval_sec_per_episode_random": 0.017583293999923626
+    },
+    {
+      "num_candidates": 10,
+      "slate_size": 2,
+      "train_sec_per_step": 0.0015767166700003145,
+      "eval_sec_per_episode_slateq": 0.05746655000009923,
+      "eval_sec_per_episode_random": 0.02412873399996897
+    },
+    {
+      "num_candidates": 10,
+      "slate_size": 3,
+      "train_sec_per_step": 0.002158201630000258,
+      "eval_sec_per_episode_slateq": 0.0821217319999414,
+      "eval_sec_per_episode_random": 0.0319950339999923
+    },
+    {
+      "num_candidates": 10,
+      "slate_size": 5,
+      "train_sec_per_step": 0.002287955949999741,
+      "eval_sec_per_episode_slateq": 0.06871259199993801,
+      "eval_sec_per_episode_random": 0.03928836999999476
+    },
+    {
+      "num_candidates": 20,
+      "slate_size": 2,
+      "train_sec_per_step": 0.002821890970000095,
+      "eval_sec_per_episode_slateq": 0.0705554299999494,
+      "eval_sec_per_episode_random": 0.02961044600000605
+    },
+    {
+      "num_candidates": 20,
+      "slate_size": 3,
+      "train_sec_per_step": 0.0026373298099999372,
+      "eval_sec_per_episode_slateq": 0.059071299999923214,
+      "eval_sec_per_episode_random": 0.029865410000056727
+    },
+    {
+      "num_candidates": 20,
+      "slate_size": 5,
+      "train_sec_per_step": 0.003590063110000483,
+      "eval_sec_per_episode_slateq": 0.057966602000087734,
+      "eval_sec_per_episode_random": 0.02707559600006789
+    },
+    {
+      "num_candidates": 40,
+      "slate_size": 2,
+      "train_sec_per_step": 0.00409637606000033,
+      "eval_sec_per_episode_slateq": 0.21375891999996383,
+      "eval_sec_per_episode_random": 0.0981558799999766
+    },
+    {
+      "num_candidates": 40,
+      "slate_size": 3,
+      "train_sec_per_step": 0.004615918059999967,
+      "eval_sec_per_episode_slateq": 0.13521412000001873,
+      "eval_sec_per_episode_random": 0.03975194000013289
+    },
+    {
+      "num_candidates": 40,
+      "slate_size": 5,
+      "train_sec_per_step": 0.0047061002700000245,
+      "eval_sec_per_episode_slateq": 0.0766485939999984,
+      "eval_sec_per_episode_random": 0.06350952000007964
+    },
+    {
+      "num_candidates": 80,
+      "slate_size": 2,
+      "train_sec_per_step": 0.005620001210000191,
+      "eval_sec_per_episode_slateq": 0.132558696000051,
+      "eval_sec_per_episode_random": 0.17412421000000905
+    },
+    {
+      "num_candidates": 80,
+      "slate_size": 3,
+      "train_sec_per_step": 0.0058686989100002395,
+      "eval_sec_per_episode_slateq": 0.1020642860000953,
+      "eval_sec_per_episode_random": 0.05569622800001525
+    },
+    {
+      "num_candidates": 80,
+      "slate_size": 5,
+      "train_sec_per_step": 0.005783530260000407,
+      "eval_sec_per_episode_slateq": 0.07854861999992863,
+      "eval_sec_per_episode_random": 0.04350868399997125
+    }
+  ]
+}

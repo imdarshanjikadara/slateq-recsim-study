@@ -103,6 +103,36 @@ centered RMSProp (lr 2.5e-4, decay 0.95, eps 1e-5), γ 0.99 (learned-myopic: γ 
 
 **12.8 FullSlateQ (T5):** deferred until after Phase 3; cap proposed in Phase 4 from measured timings (RECON suggests ~720 ordered slates).
 
+## 14. Main sweep and analysis plan for RQ1 and RQ2 (fixed 2026-11-06, before any eval-stream run of a learned agent)
+
+**14.1 Grid** (`configs/experiments/rq2.yaml`, DEVIATIONS D10): N ∈ {5, 10, 20, 40, 80} × k ∈ {2, 3, 5} with k < N (14 cells), plus the degenerate control (5, 5), reported separately and excluded from all RQ2 summaries. Agents: random, oracle-myopic, learned-myopic, SlateQ. Run seeds 0–4. Budget, hyperparameters and eval_episodes from §12.6 (read by the runner from `results/phase3/`, never retyped). Traces: first 5 eval episodes of every run (§8). Learning curves (tune stream, every 50K steps, 200 episodes) for the primary cell only.
+
+**14.2 Runner** (`scripts/sweep.py`): one subprocess per (agent, cell, seed); resumable; per-job timeout = 3 × the measured estimate (≥ 30 min); one retry only for infrastructure crashes; runs that fail cleanly (e.g. non-finite loss) are never retried or averaged. The sweep refuses to start or resume on a dirty tree or a different commit (recorded in `results/raw/rq2/_sweep.json`). Every run's `meta.json` holds the git SHA and lockfile hash.
+
+**14.3 RQ1 (primary).** Cell (10, 3). **Primary comparison: SlateQ − learned-myopic** (same network, information, data and budget; only γ differs), decided by the student before any result. Statistic: per-seed paired difference of per-run mean total reward (2400 common-random-number eval episodes), then mean, std and seed-bootstrap 95% CI over the 5 seeds (§7); within-seed episode-level paired mean ± SE for each seed. **Secondary** (reported with the same statistics, no ranking among them): SlateQ − oracle-myopic (privileged reference), SlateQ − random, learned-myopic − oracle-myopic; secondary metrics of §5 (session length, clicks, clicked quality, reward per step).
+
+**14.4 RQ2.** The same primary gap (SlateQ − learned-myopic) per cell, with CI. Reported as a heatmap over (N, k) and as line plots vs N per k and vs k per N. Trends are described from the CIs; no hypothesis test across cells. Missing or failed cells are shown as missing.
+
+**14.5 Case-study rule (F6).** The case-study seed is the run seed whose per-seed RQ1 primary gap is the median of the 5 seeds; the case-study user is evaluation episode 0 of that seed (traced for every agent, same user by common random numbers). Fixed here, before any plot.
+
+**14.6 Interpretation rule.** "SlateQ improves on myopic" is claimed for a cell only if the seed-bootstrap 95% CI of the primary gap excludes 0 and all 5 per-seed differences have the same sign; a CI including 0 is "no clear difference". With 5 seeds no significance language is used (§7).
+
+## 15. RQ3 addendum: misspecified user choice model (fixed 2026-11-06, before any RQ3 run)
+
+**15.1 What SlateQ assumes.** Our port (as RecSim's `SlateDecompQAgent`) scores documents with a fixed multinomial-proportional model: score = user · doc − min_normalizer (−1), no-click mass 1, normalised over the slate plus the no-click option (`agents/slateq.py: score_documents`). The assumption is used in slate selection (score × Q) and in the SARSA target (choice probabilities of the next slate). The environment's TRUE model is a separate object inside RecSim's user model; changing it leaves the agent's scoring unchanged (`tests/test_rq3.py`).
+
+**15.2 Ladder** (cell (10, 3), run seeds 0–4, all four agents, §12.6 budget and hyperparameters, no re-tuning):
+| Rung | Env's TRUE choice model | Mismatch with what SlateQ assumes |
+|---|---|---|
+| 0 matched | multinomial proportional, no-click mass 1 | none (= the RQ1 runs of §14, reused) |
+| 1 mild | multinomial proportional, no-click mass 3 | same form; users skip more often than assumed |
+| 2 moderate | multinomial logit, no-click mass 1 | different functional form (exponential) |
+| 3 severe | proportional cascade (RecSim's attention 0.65, score scaling 0.05) | position effects the agent ignores; much lower click rate |
+
+**15.3 Oracle fairness.** The oracle-myopic uses the TRUE model in every rung (as in §2); for the cascade it ranks by the true per-item click propensity (DEVIATIONS D11). Learned agents only see observations; their assumed model is the fixed one of 15.1.
+
+**15.4 Outcome.** Per rung: the primary gap SlateQ − learned-myopic with seed-bootstrap CI (as §14.3), plus absolute rewards of all four agents, since the choice model changes click rates and therefore episode length and reward scale. The gap is also reported relative to the rung's learned-myopic reward. No ordering of rungs by "degree" beyond the table above is claimed from the data.
+
 ## 13. Change log
 
 | Date | Change | Reason |
@@ -110,3 +140,4 @@ centered RMSProp (lr 2.5e-4, decay 0.95, eps 1e-5), γ 0.99 (learned-myopic: γ 
 | 2026-11-05 | Protocol created; eval_episodes = 2400 from the variance study | Phase 2 |
 | 2026-11-06 | §12 rules for learned agents (defaults, seeds, budget rule, tuning grid, selection, n re-check) fixed before any Phase 3 run | Phase 3, approved T1–T6 |
 | 2026-11-06 | §12.6 filled in: budget 300K, selected SlateQ / learned-myopic configs, eval_episodes stays 2400 | Outcome of the pre-registered rules 12.3–12.5 |
+| 2026-11-06 | §14 sweep grid and RQ1/RQ2 analysis plan (primary = SlateQ − learned-myopic), §15 RQ3 ladder | Before any eval-stream run of a learned agent; primary comparison chosen by the student |

@@ -1,0 +1,15 @@
+# RQ3: misspecified user choice model (PROTOCOL §15). SlateQ always assumes the matched model
+# (multinomial proportional, no-click mass 1). Rung 0 (matched) = the (10,3) runs of rq2.yaml, reused.
+# Budget, hyperparameters and eval_episodes come from the frozen Phase 3 files (PROTOCOL 12.6).
+experiment: rq3
+description: SlateQ vs myopic when the user's true choice model differs from the assumed one
+grid:
+  num_candidates: [10]
+  slate_size: [3]
+seeds: [0, 1, 2, 3, 4]
+agents: [random, oracle_myopic, learned_myopic, slateq]
+trace_episodes: 5
+conditions:
+  - {name: mild_noclick3, choice_model: multinomial_proportional, no_click_mass: 3.0}
+  - {name: moderate_logit, choice_model: multinomial_logit, no_click_mass: 1.0}
+  - {name: severe_cascade, choice_model: proportional_cascade, no_click_mass: 1.0}

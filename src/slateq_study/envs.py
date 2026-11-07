@@ -44,6 +44,7 @@ def make_env(env_cfg: EnvConfig, seed: int) -> Any:
         choice_model_ctor=_choice_model_class(env_cfg.choice_model),
         response_model_ctor=ie.IEvResponse,
         user_state_ctor=ie.IEvUserState,
+        no_click_mass=float(env_cfg.no_click_mass),
         seed=int(seed),
     )
     document_sampler = ie.UtilityModelVideoSampler(doc_ctor=ie.IEvVideo, seed=int(seed))

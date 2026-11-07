@@ -2,7 +2,16 @@
 # On Windows: winget install ezwinports.make ; uv via `python -m pip install --user uv`.
 UV ?= python -m uv
 
-.PHONY: setup test smoke lint format
+SPEC ?= configs/experiments/rq2.yaml
+WORKERS ?= 4
+
+.PHONY: setup test smoke lint format sweep-dry sweep
+
+sweep-dry:
+	$(UV) run python scripts/sweep.py $(SPEC) --dry-run --workers $(WORKERS)
+
+sweep:
+	$(UV) run python scripts/sweep.py $(SPEC) --workers $(WORKERS)
 
 setup:
 	git submodule update --init

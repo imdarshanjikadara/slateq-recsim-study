@@ -1,0 +1,15 @@
+# RQ1 + RQ2 main sweep (PROTOCOL §14). Training budget, learned-agent hyperparameters and
+# eval_episodes are NOT set here: they are read from the frozen Phase 3 files (PROTOCOL 12.6).
+experiment: rq2
+description: SlateQ vs myopic over catalog size N and slate size k; RQ1 = primary cell (10,3)
+grid:
+  num_candidates: [5, 10, 20, 40, 80]
+  slate_size: [2, 3, 5]
+controls: [[5, 5]]        # degenerate k == N control: no selection problem; excluded from the main analysis
+seeds: [0, 1, 2, 3, 4]
+agents: [random, oracle_myopic, learned_myopic, slateq]
+trace_episodes: 5         # PROTOCOL §8: first 5 eval episodes of every run
+curves:                   # learning curves (tune stream) for the primary cell only
+  cells: [[10, 3]]
+  eval_every: 50000
+  curve_episodes: 200

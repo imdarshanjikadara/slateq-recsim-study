@@ -39,6 +39,8 @@ class EnvConfig:
     slate_size: k, items shown per step.
     max_steps: safeguard against unbounded episodes (RecSim itself only stops on time budget).
     choice_model: the user's TRUE choice model (varied only in RQ3 / Phase 5).
+    no_click_mass: the user's TRUE no-click mass (RecSim IEvUserModel argument; default 1.0 is
+        RecSim's and what SlateQ assumes; varied only in RQ3).
     """
 
     num_candidates: int = 10
@@ -46,8 +48,11 @@ class EnvConfig:
     resample_documents: bool = True
     max_steps: int = 1000
     choice_model: str = "multinomial_proportional"
+    no_click_mass: float = 1.0
 
     def validate(self) -> None:
+        if not isinstance(self.no_click_mass, int | float) or not 0 <= self.no_click_mass < 1e6:
+            raise ConfigError(f"no_click_mass must be a number >= 0, got {self.no_click_mass!r}")
         if self.choice_model not in CHOICE_MODELS:
             raise ConfigError(
                 f"unknown choice_model {self.choice_model!r}; known: {sorted(CHOICE_MODELS)}"
@@ -130,6 +135,9 @@ class RunConfig:
         for name, default in _HASH_OPTIONAL.items():
             if d.get(name) == default:
                 d.pop(name)
+        for name, default in _ENV_HASH_OPTIONAL.items():
+            if d["env"].get(name) == default:
+                d["env"].pop(name)
         return json.dumps(d, sort_keys=True, separators=(",", ":"))
 
     @property
@@ -138,6 +146,7 @@ class RunConfig:
 
 
 _HASH_OPTIONAL = {"eval_every": 0, "curve_episodes": 200, "eval_stream": "eval"}
+_ENV_HASH_OPTIONAL = {"no_click_mass": 1.0}  # added in Phase 5
 
 
 def _build(cls, data: Any, where: str):

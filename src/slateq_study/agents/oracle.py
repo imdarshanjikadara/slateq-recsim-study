@@ -38,10 +38,20 @@ class OracleMyopicAgent(Agent):
         )
 
     def attach_true_state(self, env) -> None:
+        from recsim import choice_model as cm
         from recsim.agents import greedy_pctr_agent
 
         state = true_user_state(env)
-        true_model = type(user_model(env).choice_model)(state.choice_features)
+        true_cls = type(user_model(env).choice_model)
+        if issubclass(true_cls, cm.CascadeChoiceModel):
+            # RQ3 only. Cascade scores are position-dependent over the CANDIDATE list, so ranking
+            # candidates with them would favour early candidates. A cascade's per-item click
+            # propensity is proportional to (score - min_normalizer) [proportional cascade] or
+            # exp(score) [exponential cascade], both monotone in score, and the myopic-best cascade
+            # slate puts the highest propensities first. The proportional model on the same
+            # features gives exactly that ranking and order (PROTOCOL §15).
+            true_cls = cm.MultinomialProportionalChoiceModel
+        true_model = true_cls(state.choice_features)
         self._impl = greedy_pctr_agent.GreedyPCTRAgent(
             self._action_space, belief_state=state, choice_model=true_model
         )

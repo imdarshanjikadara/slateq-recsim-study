@@ -1,0 +1,15 @@
+# Phase 4 acceptance: 2 agents x 2 cells x 2 seeds, short training. PILOT: plumbing only, never analysed.
+experiment: mini
+pilot: true
+grid:
+  num_candidates: [5, 10]
+  slate_size: [2]
+seeds: [900, 901]
+agents: [random, slateq]
+train_steps: 21000      # just past the 20K warm-up, so a few hundred updates happen
+eval_episodes: 20
+trace_episodes: 1
+curves:
+  cells: [[5, 2]]
+  eval_every: 10000
+  curve_episodes: 5
