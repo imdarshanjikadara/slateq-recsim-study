@@ -1,0 +1,4 @@
+# The deployed site is the static folder web/ only (no Python build on Vercel).
+/*
+!/web
+!/vercel.json

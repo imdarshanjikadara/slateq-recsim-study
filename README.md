@@ -13,7 +13,7 @@ Interest Evolution simulator, whether that long-term view actually yields more e
 | **RQ2** | How does that gap change with catalog size N (candidates per step) and slate size k? |
 | **RQ3** | How sensitive is SlateQ's advantage to a misspecified user choice model? |
 
-**Interactive results:** the static site in [`web/`](web/) (overview, RQ1-RQ3, and a step-by-step replay of one simulated user under every policy).
+**Interactive results:** the static site in [`web/`](web/) (overview, RQ1-RQ3, and a step-by-step replay of one simulated user under every policy). It is deployed on Vercel as a static folder (`vercel.json`, `.vercelignore`: only `web/` is uploaded, nothing is built).
 
 ## Results
 
@@ -125,4 +125,6 @@ make reproduce-full
 - Ie, E., Jain, V., Wang, J., Narvekar, S., Agarwal, R., Wu, R., Cheng, H.-T., Chandra, T., Boutilier, C. (2019). *SlateQ: A Tractable Decomposition for Reinforcement Learning with Recommendation Sets.* IJCAI.
 - Ie, E., Hsu, C., Mladenov, M., Jain, V., Narvekar, S., Wang, J., Wu, R., Boutilier, C. (2019). *RecSim: A Configurable Simulation Platform for Recommender Systems.* arXiv:1909.04847.
 
-RecSim is © The RecSim Authors, Apache License 2.0 (`third_party/recsim/LICENSE`), used unmodified as a git submodule.
+## License
+
+This project's code is released under the MIT License ([`LICENSE`](LICENSE)). RecSim is © The RecSim Authors, Apache License 2.0 (`third_party/recsim/LICENSE`), used unmodified as a git submodule.
