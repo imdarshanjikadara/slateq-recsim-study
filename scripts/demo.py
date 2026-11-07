@@ -56,7 +56,8 @@ def main() -> int:
     if missing:
         print(f"Checkpoints/runs missing for {missing} (seed {args.seed}, cell {args.cell}).")
         print(
-            "Run the sweep first:  make sweep   (or: python scripts/sweep.py configs/experiments/rq2.yaml)"
+            "Run the sweep first: make sweep "
+            "(or: python scripts/sweep.py configs/experiments/rq2.yaml)"
         )
         return 1
 
