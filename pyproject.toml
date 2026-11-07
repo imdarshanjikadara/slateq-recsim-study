@@ -46,6 +46,7 @@ select = ["E", "F", "W", "I", "B", "UP"]
 
 [tool.ruff.lint.per-file-ignores]
 "scripts/**" = ["E402"]  # entrypoints must install the RecSim shim / runtime before other imports
+"scripts/make_numbers.py" = ["E402", "E501"]  # emits long markdown table rows
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

@@ -5,7 +5,7 @@ UV ?= python -m uv
 SPEC ?= configs/experiments/rq2.yaml
 WORKERS ?= 4
 
-.PHONY: setup test smoke lint format sweep-dry sweep analyze figures web reproduce-small reproduce-full
+.PHONY: setup test smoke lint format sweep-dry sweep analyze figures web numbers reproduce-small reproduce-full
 
 # results tables (results/rq2, results/rq3) -> figures (results/figures) -> site data (web/data)
 analyze:
@@ -16,6 +16,9 @@ figures:
 
 web:
 	$(UV) run python scripts/build_web.py
+
+numbers:
+	$(UV) run python scripts/make_numbers.py
 
 # fresh clone -> tiny end-to-end run (1 cell, 4 agents, 2 seeds, short training) -> tables, figures
 reproduce-small: setup
@@ -30,6 +33,7 @@ reproduce-full:
 	$(UV) run python scripts/analyze.py
 	$(UV) run python scripts/figures.py
 	$(UV) run python scripts/build_web.py
+	$(UV) run python scripts/make_numbers.py
 
 sweep-dry:
 	$(UV) run python scripts/sweep.py $(SPEC) --dry-run --workers $(WORKERS)
