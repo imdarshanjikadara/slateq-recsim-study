@@ -24,6 +24,10 @@ def _choice_model_class(name: str):
     recsim_compat.install()
     from recsim import choice_model
 
+    if name == "proportional_cascade":  # RecSim's version fails under numpy 2 (choice_compat)
+        from slateq_study.choice_compat import proportional_cascade_cls
+
+        return proportional_cascade_cls()
     return getattr(choice_model, CHOICE_MODELS[name])
 
 

@@ -77,3 +77,29 @@ def test_default_no_click_mass_keeps_existing_hashes():
     assert from_dict(explicit).config_hash == "b89f083ec0ee"
     other = {**base, "env": {**base["env"], "no_click_mass": 3.0}}
     assert from_dict(other).config_hash != "b89f083ec0ee"
+
+
+@pytest.mark.parametrize("cm", ["proportional_cascade", "exponential_cascade", "multinomial_logit"])
+def test_every_rq3_choice_model_runs_full_episodes(cm):
+    """RecSim's proportional cascade fails under numpy 2; our compat subclass must run."""
+    from slateq_study.harness import run_episode
+
+    agent = make_agent("random", make_env(EnvConfig(choice_model=cm), 1).action_space, 3)
+    rec = run_episode(agent, EnvConfig(choice_model=cm), env_seed=4242).record
+    assert rec.length > 0 and np.isfinite(rec.total_reward)
+
+
+def test_cascade_compat_matches_recsim_math():
+    from recsim import choice_model as rcm
+
+    from slateq_study.choice_compat import proportional_cascade_cls
+
+    feats = {"min_normalizer": -1.0, "attention_prob": 0.65, "score_scaling": 0.05}
+    ours, ref = proportional_cascade_cls()(feats), rcm.ProportionalCascadeChoiceModel(feats)
+    raw = np.array([0.3, -0.2, 0.9])
+    ours._score_documents_helper = staticmethod(lambda u, d: raw.copy())
+    ours.score_documents(None, None)
+    ref._positional_normalization(raw - (-1.0))  # RecSim's own maths on the same scores
+    np.testing.assert_allclose(ours.scores, ref.scores)
+    np.testing.assert_allclose(ours._score_no_click, ref._score_no_click)
+    assert issubclass(type(ours), rcm.CascadeChoiceModel)
