@@ -5,7 +5,7 @@ UV ?= python -m uv
 SPEC ?= configs/experiments/rq2.yaml
 WORKERS ?= 4
 
-.PHONY: setup test smoke lint format sweep-dry sweep analyze figures web numbers reproduce-small reproduce-full
+.PHONY: setup test smoke lint format sweep-dry sweep analyze figures web numbers demo reproduce-small reproduce-full
 
 # results tables (results/rq2, results/rq3) -> figures (results/figures) -> site data (web/data)
 analyze:
@@ -19,6 +19,10 @@ web:
 
 numbers:
 	$(UV) run python scripts/make_numbers.py
+
+# one simulated user under every policy, from saved checkpoints (checks replay == recorded eval)
+demo:
+	$(UV) run python scripts/demo.py
 
 # fresh clone -> tiny end-to-end run (1 cell, 4 agents, 2 seeds, short training) -> tables, figures
 reproduce-small: setup
