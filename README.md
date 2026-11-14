@@ -121,7 +121,7 @@ make reproduce-full
 - **Simulated users.** Conclusions are about RecSim Interest Evolution, not about real platforms.
 - **Privileged oracle.** `oracle_myopic` reads the true user state. It is a ceiling, not a deployable baseline; the fair comparison is `learned_myopic`.
 - **"Catalog size" means candidates per step.** RecSim redraws candidates every step; there is no fixed catalogue ([DEVIATIONS](docs/DEVIATIONS.md) D5).
-- **Re-implemented agent.** SlateQ is a PyTorch port, tested against RecSim's scoring functions and the paper's equations; RecSim's TF1 agent was not run side by side (D3).
+- **Re-implemented agent.** SlateQ is our PyTorch port of RecSim's agent. RecSim's original TensorFlow agent was never run side by side with it (D3), so there is no end-to-end equivalence check. The evidence we do have: unit tests of every formula (scores, top-k, SARSA target, ε schedule), a γ = 0 version that matches the privileged oracle (97 % of the oracle's gain over random in Phase 3), Q-values on the expected scale, and exact replay of saved models ([`docs/literature/OUR_SETUP_FACTS.md`](docs/literature/OUR_SETUP_FACTS.md)). Small differences from the TF agent (D8) could still shift absolute numbers; our results are results for this port.
 - **No-click handling.** Following the reference implementation, the no-click option has zero continuation value. This shortens SlateQ's effective horizon (D6, [`docs/TRAINING_NOTES.md`](docs/TRAINING_NOTES.md)).
 - **Few seeds.** 5 run seeds, so we report effect sizes and CIs, not significance tests.
 - **One environment** and one training budget.

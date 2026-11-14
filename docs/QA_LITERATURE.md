@@ -24,14 +24,14 @@ SlateQ and RecSim are the original papers for the method and the simulator, so a
   - critiques of evaluation practice (Deffayet et al., SIGIR Forum 2022).
 - **What 2026 looks like.** The work citing SlateQ and RecSim is mostly generative and LLM-based slate ranking. None of it, as screened, re-measures SlateQ against a myopic baseline across sizes.
 - **How we position.** A controlled, pre-registered replication and extension, not a state-of-the-art claim.
-- **Limits.** Two scaling papers could not be read in full, and Google Scholar was not queried.
+- **Limits.** Google Scholar was not queried, so the search is not exhaustive.
 
 ## 2. "Hasn't someone already done this?"
 
 ### 30 seconds
 
 - **RQ1:** yes. The SlateQ paper itself compared SlateQ with a γ = 0 myopic model at 10 candidates and slate size 3. Our RQ1 is a deliberate replication with an independent implementation and stricter statistics.
-- **RQ2:** the paper used that single size. We did not find a study of how the gap changes over a grid of sizes, among the sources we searched on 2026-11-13. Two papers on SlateQ scaling were unreadable to us, so this is "not found", not "not done".
+- **RQ2:** the paper used that single size. We did not find a study of how the gap changes over a grid of sizes, among the sources we searched on 2026-11-13. The closest papers, two Singha Roy et al. papers on SlateQ with 300 and 2,000 candidates, compare SlateQ with their own faster actor and skip a myopic baseline on purpose. This is still "not found in the sources searched", not "not done".
 - **RQ3:** the paper ran one cascade test. We run a graded ladder.
 
 ### 2 minutes
@@ -155,7 +155,7 @@ The number of candidates N redrawn every step (`num_candidates`, `resample_docum
 **Q. Which recent paper is closest, and how do you differ?**
 
 - **Closest that we could read:** Singha Roy et al. 2024 (INRA@RecSys), which has SlateQ vs Greedy in RecSim with real data. It uses one size (300 candidates, k = 10), hit-ratio metrics and γ = 1, and has no learned γ = 0 control and no misspecification ladder.
-- **Possibly closer but unread:** the same group's RecSys 2023 and TORS 2025 papers on SlateQ scalability.
+- **Same group, read in full:** their RecSys 2023 and ACM TORS papers use 300 and 2,000 candidates, but compare SlateQ with their faster actor at γ = 1 and have no myopic baseline (NOTES/singharoy2023scalable, NOTES/singharoy2025dontgetbored).
 
 ---
 

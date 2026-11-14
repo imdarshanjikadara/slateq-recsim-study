@@ -24,7 +24,7 @@ SlateFree [giovanidis2022slatefree, preprint] decomposes the slate Q-function wi
 
 Singha Roy et al. [singharoy2024news, workshop] extend RecSim with real news data (MIND) and a learned choice model. They restrict SlateQ's Q-evaluations to a learned candidate subset (Proto-Slate). Their reported comparison is with 300 candidates and k = 10, against Random and Greedy baselines, over 5 seeds with paired t-tests. Their candidate-subset size is varied to reduce inference cost.
 
-A RecSys 2023 paper and a 2025 ACM TORS article by the same group address SlateQ's scalability with large item pools [singharoy2023scalable; singharoy2025dontgetbored]. We could not read their full texts (see Limits of this review), so we make no claim about their content.
+A RecSys 2023 paper and its extended ACM TORS version by the same group address the cost of building slates when there are many candidates [singharoy2023scalable; singharoy2025dontgetbored]. An actor proposes a point in item space, and SlateQ's Q-network scores only the nearest candidates. They test 300 and 2,000 candidates with slate size 5 and γ = 1, and compare against full SlateQ, not against a myopic policy, which they leave out because SlateQ was already shown to beat it. The journal version adds "bored" explorative users. So these papers study SlateQ with larger candidate pools, but they do not measure how the long-term-versus-myopic gap changes with pool or slate size, which is our RQ2.
 
 ### Simulation and evaluation methodology
 
@@ -92,7 +92,7 @@ This project is a controlled, pre-registered **replication and extension** of Sl
 
 - Against the privileged oracle it reaches +27.17 at (80, 3).
 - Part of the larger primary gap at high N reflects the learned baseline weakening under a budget frozen at (10, 3).
-- To our knowledge, among the sources we reviewed (search date 2026-11-13), we did not find a study reporting this gap over a grid of candidate and slate sizes. Two papers on SlateQ scaling could not be read in full.
+- To our knowledge, among the sources we reviewed (search date 2026-11-13), we did not find a study reporting this gap over a grid of candidate and slate sizes. The two Singha Roy scaling papers, read in full on 2026-11-13, do not include a myopic baseline.
 
 **RQ3, extension.** We complement the paper's single cascade test with a graded ladder, judged against learned and privileged myopic baselines.
 
@@ -109,9 +109,7 @@ This project is a controlled, pre-registered **replication and extension** of Sl
   - backward chaining from GeMS, Singha Roy 2024, SlateFree and two surveys.
 - **Semantic Scholar** searches were mostly rate-limited.
 - **Google Scholar** was not queried. OpenAlex citation coverage may be lower than Google Scholar's.
-- **Not read in full** (publisher blocked automated access):
-  - Singha Roy et al., RecSys 2023;
-  - Singha Roy et al., ACM TORS 2025;
+- **Not read in full** (publisher blocked automated access; the two Singha Roy scaling papers were later downloaded by the student and read in full on 2026-11-13):
   - the 2023 GCITC paper comparing FullSlateQ and SlateQ (closed access).
 - **Preprints and non-peer-reviewed sources are flagged:** SlateFree, RecSim, RecSim NG, the long SlateQ version, HSRL, and the Pantea thesis.
 - **2026 work was found** (52 forward citations). None of the screened 2026 titles or abstracts ran SlateQ against a myopic baseline across sizes or choice models.
@@ -137,7 +135,7 @@ This project is a controlled, pre-registered **replication and extension** of Sl
 | deffayet2023gems | NOTES/deffayet2023gems.md | E3 | yes |
 | giovanidis2022slatefree | NOTES/giovanidis2022slatefree.md | E3 | yes |
 | singharoy2024news | NOTES/singharoy2024news.md | E3 | yes |
-| singharoy2023scalable; Singha Roy 2025 | NOTES/singharoy2023scalable.md (E0); NOTES/singharoy2025dontgetbored.md (E1) | E0/E1 | **Allowed only because the sentence makes no claim about content beyond the topic stated in the title, and says the texts were not read.** Flagged P2 in LIT_AUDIT. |
+| singharoy2023scalable; singharoy2025dontgetbored | NOTES/singharoy2023scalable.md; NOTES/singharoy2025dontgetbored.md | E3 (both, read 2026-11-13) | yes |
 | deffayet2022offline | NOTES/deffayet2022offline.md | E2-E3 | yes |
 | zhao2023kuaisim | NOTES/zhao2023kuaisim.md | E2 | yes |
 | mladenov2021recsimng | NOTES/mladenov2021recsimng.md | E2 | yes |

@@ -14,6 +14,17 @@
 | S9 self-audit, final summary, commit | done 2026-11-13 | LIT_AUDIT.md (1 P0 fixed, P1 fixed except open A4/A11), FINAL_SUMMARY.md. |
 
 ## Open issues
-- Singha Roy 2023 (RecSys) and 2025 (TORS) full texts not obtainable by tool (ACM 403): student must open them; possible RQ2/RQ3 overlap unresolved.
+- ~~Singha Roy 2023 and 2025 full texts~~: resolved 2026-11-13 (student supplied PDFs; read to E3; no RQ2 overlap).
 - Google Scholar not queried.
 - docs/papers/slateq.pdf and recsim.pdf are committed in the public repo (arXiv licence may not permit redistribution) - flagged in WORDING_ISSUES/FINAL_SUMMARY.
+
+## Phase 6b log (2026-11-13)
+
+| Step | Status | Notes |
+|---|---|---|
+| Backup of results/raw | done | Two copies (D: and C:), 3,947 files, SHA-256 manifest verified on both. Outside the repo. |
+| PROTOCOL 16 + DEVIATIONS D13-D16 | done | Registered after the Phase 6 results were seen, before any Phase 6b run; commit "phase 6b: register follow-up experiments E1-E5 (PROTOCOL 16) before any run". |
+| Code | done | Agent variants in the sweep runner; SlateQ paper cascade (`src/slateq_study/paper_cascade.py`); tests 113 passed; `make demo` replay check passed. |
+| Sweeps | running | phase6b_cascade (E4) -> phase6b (E1, E2) -> phase6b_budget (E3), 4 workers. Log: results/logs/phase6b_chain.log. |
+| Singha Roy 2023 + TORS | done (E3) | No myopic baseline in either (skipped on purpose, γ = 1). No RQ2 overlap. NOTES, OVERLAP_MATRIX, POSITIONING, RELATED_WORK_DRAFT, CANDIDATES, SEED_VERIFIED, FINAL_SUMMARY, QA, LIT_AUDIT A4 updated. Bib year corrected to 2026 (PDF), key kept. |
+| Port validity | done | OUR_SETUP_FACTS "Independent evidence" section; README limitation rewritten. The report does not exist yet: its limitations section must carry the same text (Phase 8). |

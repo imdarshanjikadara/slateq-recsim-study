@@ -26,7 +26,7 @@
 | deffayet2023gems | Generative Slate Recommendation with Reinforcement Learning | Deffayet, Thonet, Renders, de Rijke | 2023 | WSDM 2023, pp. 580-588 (peer-reviewed) | 10.1145/3539597.3570412; arXiv:2301.08632 | github.com/naver/gems, licence not a standard SPDX id (GitHub: NOASSERTION); last push 2023-02-24 | E1 | Pages added. |
 | deffayet2022offline | Offline Evaluation for Reinforcement Learning-based Recommendation: A Critical Issue and Some Alternatives | Deffayet, Thonet, Renders, de Rijke | **2022** | ACM SIGIR Forum 56(2), pp. 1-14 | 10.1145/3582900.3582905; arXiv:2301.00993 | - | E1 | Seed said "SIGIR Forum 56 (2023)". Crossref gives **2022, vol. 56, no. 2**; the arXiv version is dated 2023-01-03. |
 | giovanidis2022slatefree | SlateFree: a Model-Free Decomposition for Reinforcement Learning with Slate Actions | Giovanidis | 2022 | arXiv preprint (not peer-reviewed as far as found) | arXiv:2209.01876 | - | E1 | None. |
-| singharoy2023scalable | Scalable Deep Q-Learning for Session-Based Slate Recommendation | Singha Roy, D'Amico, Tragos, Lawlor, Hurley | 2023 | RecSys 2023, pp. 877-882 (peer-reviewed, short paper) | 10.1145/3604915.3608843 | not found yet | E0 (not open access; no arXiv version found) | DOI found. Full text not obtained: see "Could not verify". |
+| singharoy2023scalable | Scalable Deep Q-Learning for Session-Based Slate Recommendation | Singha Roy, D'Amico, Tragos, Lawlor, Hurley | 2023 | RecSys 2023, pp. 877-882 (peer-reviewed, short paper) | 10.1145/3604915.3608843 | full text read 2026-11-13 (student-supplied PDF; CC BY 4.0) | E3 (2026-11-13) | Metadata matches the PDF (pp. 877-882). |
 | singharoy2024news | Simulating Real-World News Consumption: Deep Q-Learning for Diverse User-Centric Slate Recommendations | Singha Roy, Tragos, Lawlor, Hurley | 2024 | INRA 2024 workshop (co-located with RecSys 2024), CEUR-WS Vol-3929, short3 (peer-reviewed workshop) | ceur-ws.org/Vol-3929/short3.pdf | see note | E1 | Venue name added (INRA 2024). |
 | dai2023lowrank | Representation Learning in Low-rank Slate-based Recommender Systems | Dai, Sun | 2023 | Workshop: arXiv comment "in MFPL, ICML 2023" (ICML 2023 workshop) | arXiv:2309.08622 | - | E1 | Venue verified as an ICML 2023 workshop, not the main conference. |
 | wang2025hsrl | Hierarchical Semantic RL: Tackling the Problem of Dynamic Action Space for RL-based Recommendations | M. Wang, Liu, Yi, L. Wu, Zhao, Pan, Cai, Jiang | 2025 | arXiv preprint | arXiv:2510.09167 | - | E1 | Full title added. |
@@ -44,6 +44,6 @@
 
 ## Could not verify (S1)
 
-- **singharoy2023scalable full text:** the ACM DL page is not open access and no arXiv copy was found (checked 2026-11-13). Its metadata is verified via Crossref (E0). It cannot support any substantive claim until the full text is read; it is listed in FINAL_SUMMARY "open yourself".
+- **singharoy2023scalable full text:** the ACM DL page is not open access and no arXiv copy was found (checked 2026-11-13). Its metadata is verified via Crossref (E0). It cannot support any substantive claim until the full text is read; it is listed in FINAL_SUMMARY "open yourself". *Update 2026-11-13: the student downloaded the PDF; read in full (E3).*
 - **KuaiSim's NeurIPS track:** not stated in the sources fetched.
 - **Pantea thesis official repository page:** not accessible publicly (embargoed or closed).

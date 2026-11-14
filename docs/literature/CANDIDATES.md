@@ -9,9 +9,9 @@ Evidence levels: E0 metadata only; E1 abstract; E2 introduction, related work an
 | # | Key | Citation (short) | Status | RQs touched | Relation to us | Ev. | Overlap risk |
 |---|---|---|---|---|---|---|---|
 | 1 | ie2019slateq | Ie et al. 2019, SlateQ (arXiv long version; IJCAI-19 short) | preprint / peer-reviewed | RQ1, RQ3 | Same comparison type: SlateQ vs a learned γ=0 MYOP at m=10, k=3 in the same simulator family (§7.1). Also a cascade robustness test (§7.3). **Our RQ1 is a replication of §7.1, and our RQ3 overlaps §7.3.** It did not vary m or k. | E3 | **high** (RQ1, RQ3) |
-| 2 | singharoy2025dontgetbored | Singha Roy et al. 2025, ACM TORS | peer-reviewed | RQ2?, RQ3? | The abstract mentions SlateQ scaling with item-pool size and "different simulated user engagement behaviors". Not read in full (ACM 403). | E1 | **unknown, possibly high** |
+| 2 | singharoy2025dontgetbored | Singha Roy et al. 2025, ACM TORS | peer-reviewed | RQ2 theme only | SlateQ vs their faster actor at 300 and 2,000 candidates, k = 5, γ = 1; no myopic baseline; "bored" explorative users. Read in full 2026-11-13. | E3 | **low** (no gap to myopic) |
 | 3 | deffayet2023gems | Deffayet et al. 2023, GeMS, WSDM | peer-reviewed | RQ3, methodology | SlateQ evaluated under click models that break its single-click assumption; a privileged short-term oracle baseline; 10 seeds. | E3 | partial |
-| 4 | singharoy2023scalable | Singha Roy et al. 2023, RecSys | peer-reviewed | RQ2? | SlateQ scaling for large item pools. Not read (ACM 403). | E0 | **unknown** |
+| 4 | singharoy2023scalable | Singha Roy et al. 2023, RecSys | peer-reviewed | RQ2 theme only | SlateQ vs their faster actor at 300 and 2,000 candidates, k = 5, γ = 1; no myopic baseline. Read in full 2026-11-13. | E3 | **low** (no gap to myopic) |
 | 5 | singharoy2024news | Singha Roy et al. 2024, INRA@RecSys | peer-reviewed workshop | RQ1 (partial) | SlateQ vs a greedy (myopic) baseline on a real-data RecSim extension; 300 candidates, k=10, γ=1, 5 seeds with paired t-tests. | E3 | partial |
 | 6 | giovanidis2022slatefree | Giovanidis 2022, SlateFree | preprint | RQ2 (partial), RQ3 (motivation) | Varies catalog K and slate N, but measures convergence of SlateQ vs SlateFree, not the gap to a myopic baseline. Motivated by SlateQ's need for a known choice model. | E3 | partial |
 | 7 | pantea2022thesis | Pantea 2022, TU Delft BSc thesis | thesis (not peer-reviewed) | RQ1 (partial) | SlateQ vs FullSlateQ in a custom RecSim environment; γ=0.5; 3 seeds; no myopic baseline. Its future work names exactly our γ question. | E3 | partial |
@@ -49,10 +49,9 @@ Criterion: a SlateQ-style decomposition run against a myopic or greedy baseline 
    - §7.3: exponential cascade users.
    - (a) is not done (m=10, k=3 only).
 2. **singharoy2025dontgetbored**
-   - **Cannot be excluded.** The abstract mentions item-pool scaling and different simulated user behaviours.
-   - Whether a myopic baseline and gap curves exist is unknown until the full text is read.
+   - **Excluded after full reading (2026-11-13):** no myopic baseline (skipped on purpose, γ = 1), one slate size, so no gap-vs-size result.
 3. **singharoy2023scalable**
-   - Cannot be excluded on scaling (E0).
+   - **Excluded after full reading (2026-11-13):** same design as the journal version, no myopic baseline.
 4. **deffayet2023gems**
    - (b) partially: SlateQ under non-matching click models, but compared with GeMS and other baselines, not framed as a SlateQ-vs-myopic gap.
 5. **singharoy2024news**

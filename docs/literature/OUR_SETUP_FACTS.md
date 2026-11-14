@@ -41,6 +41,22 @@ Every statement below cites a file or a command run on 2026-11-13. Nothing here 
 - Optimiser details differ slightly. Torch RMSProp puts eps outside the square root; TF puts it inside (D8).
 - The equivalence evidence is therefore **component-level only**: scoring, selection, target and schedule.
 
+### Independent evidence that our SlateQ port is correct (no TensorFlow side-by-side run)
+
+We did not run RecSim's original TF1 agent next to ours (its stack is excluded, D1). The evidence below is independent of that check. It shows the parts are right and the trained agents behave as theory predicts, but it is **not** proof that our numbers equal what the TF agent would produce.
+
+| # | Evidence | What it checks | Source (re-run with) |
+|---|---|---|---|
+| 1 | Analytic unit tests: scores equal RecSim's own `MultinomialProportionalChoiceModel`; top-k = largest score × Q; SARSA target equals a hand computation of r + γ Σ P(j \| s', A') Q(s', j); ε schedule equals Dopamine's; learned-myopic cannot have γ ≠ 0; replay stores the next served slate and the terminal flag | Each formula of the decomposition and target, separately | `tests/test_slateq.py` (12 tests; `make test`) |
+| 2 | γ = 0 calibration against the oracle (Phase 3, pre-registered check 3): learned-myopic recovered 97.2 % of the oracle's improvement over random (threshold 90 %) | A γ = 0 agent trained with our code learns the same click-maximising ranking that the oracle computes from the true user state | `results/phase3/ladder.json` (`3_calibration_recovery_mean` = 0.972) |
+| 3 | Same calibration in the final runs: learned-myopic − oracle-myopic shows "no clear difference" in 7 of the 8 cells with N ≤ 20 (e.g. −0.09, CI [−0.24, +0.08] at (10, 3)); the exception is (20, 2) at −0.97 | The learned γ = 0 model matches a model that cannot be wrong about clicks, on fresh evaluation users | `results/rq2/gaps.csv`, rows "learned-myopic - oracle-myopic" |
+| 4 | Q-value scale (Phase 3 check 4): learned-myopic's mean clicked-item Q is 3.95 (both seeds), close to one step of watch time (about 4); SlateQ's is 8.7 to 8.9, above one step but far below 4 / (1 − γ) = 400 | γ = 0 learns immediate reward; γ = 0.99 learns a multi-step value, shortened by the zero no-click value (D6) | `results/phase3/ladder.json` (`4_q_scale_*`) |
+| 5 | Replay check: reloading the saved networks and replaying an evaluation user reproduces the recorded rewards exactly, for every agent | Saved models, evaluation and logging agree | `make demo` ("replay matches the recorded evaluation", run 2026-11-13 on the Phase 6b code) |
+| 6 | Determinism: the same seed gives the same training; exploration never touches the global random generator | Common random numbers are valid | `tests/test_slateq.py::test_same_seed_same_training`, `::test_exploration_does_not_touch_global_rng` |
+| 7 | Sanity of the environment wrapper: with the default choice model our environment produces the same trajectory as RecSim's own `create_environment` | Results come from RecSim's unmodified environment | `tests/test_envs.py` |
+
+**Remaining gap (limitation):** the evidence is component-level plus behavioural. Small implementation differences from the TF agent (optimiser epsilon placement, ε schedule length, ε_eval = 0; D8) could change absolute numbers slightly. No test can rule out an effect of these on the size of the SlateQ advantage. Our results are therefore results for **our port**, faithful to RecSim's reference in every component we could test.
+
 **Informal plausibility only** (different implementation, evaluation and seeds; context only, not evidence of equivalence):
 
 - Our random baseline, learned-myopic and SlateQ at (10, 3) score 160.55, 167.50 and 169.20 (NUMBERS.md RQ1 table).

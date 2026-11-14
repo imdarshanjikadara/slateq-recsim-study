@@ -14,7 +14,7 @@
      - **sizes:** the paper used only m = 10, k = 3.
 2. **GeMS (WSDM 2023)** already shows SlateQ struggling under click models that break its assumptions, and already uses a privileged short-term oracle.
    - We differ: we measure SlateQ *vs myopic* along a graded ladder in RecSim IE; we do not propose a method.
-3. **Singha Roy et al. 2023 (RecSys) and 2025 (ACM TORS)** study SlateQ scaling with large item pools. **We could not read either** (ACM blocked automated access). They may overlap RQ2.
+3. **Singha Roy et al. 2023 (RecSys) and the ACM TORS journal version** study SlateQ with 300 and 2,000 candidates. *Update 2026-11-13: read in full (E3).* They compare SlateQ with their faster actor at γ = 1 and skip a myopic baseline on purpose, so they **do not overlap RQ2's gap question**.
 4. **Singha Roy et al. 2024 (INRA@RecSys)** compares SlateQ vs Greedy in RecSim with real data, at one size (300 candidates, k = 10, γ = 1).
 5. **SlateFree (preprint)** varies catalog and slate size, but for convergence speed, with no myopic baseline.
 6. **Pantea 2022 (BSc thesis)** compares SlateQ vs FullSlateQ at γ = 0.5 with no myopic baseline, and lists our γ question as future work.
@@ -31,7 +31,7 @@
 
 ## 3. What could not be verified
 
-- Full texts of Singha Roy 2023 and 2025, and of Kaushik 2023 (closed).
+- Full text of Kaushik 2023 (closed). *(Singha Roy 2023 and 2025 were read on 2026-11-13.)*
 - Google Scholar forward citations (not queried; OpenAlex used).
 - KuaiSim's NeurIPS track.
 - GeMS Table 2 values.
