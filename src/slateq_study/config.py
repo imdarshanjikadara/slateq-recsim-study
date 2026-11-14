@@ -28,6 +28,8 @@ CHOICE_MODELS = {
     "multinomial_logit": "MultinomialLogitChoiceModel",
     "exponential_cascade": "ExponentialCascadeChoiceModel",
     "proportional_cascade": "ProportionalCascadeChoiceModel",
+    # Phase 6b E4: the SlateQ paper's cascade (Section 6.3); our own class, paper_cascade.py
+    "paper_cascade": "PaperCascadeChoiceModel",
 }
 
 

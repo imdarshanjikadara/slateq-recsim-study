@@ -1,0 +1,14 @@
+# Phase 6b, E3 (PROTOCOL 16). Registered after the Phase 6 results were seen.
+# Both learned agents at (80, 3) with twice the frozen training budget (300K -> 600K steps), all
+# other settings frozen. The 300K-step runs are the rq2 runs of the same cell and seeds.
+experiment: phase6b_budget
+description: does the learned-myopic shortfall at N = 80 shrink with twice the training budget? (E3)
+grid:
+  num_candidates: [80]
+  slate_size: [3]
+seeds: [0, 1, 2, 3, 4]
+agents: []
+trace_episodes: 0
+variants:
+  - {name: slateq_2x, agent: slateq, budget_factor: 2}
+  - {name: lm_2x, agent: learned_myopic, budget_factor: 2}

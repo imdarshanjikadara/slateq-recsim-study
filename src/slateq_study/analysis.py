@@ -74,9 +74,9 @@ def _groups(runs: list[Run]) -> dict[tuple, dict[str, dict[int, Run]]]:
     g: dict[tuple, dict[str, dict[int, Run]]] = {}
     for r in runs:
         key = (r.job.condition, r.job.cell, r.job.control)
-        g.setdefault(key, {}).setdefault(r.job.agent, {})
+        g.setdefault(key, {}).setdefault(r.job.label, {})
         if r.status == "ok":
-            g[key][r.job.agent][r.job.seed] = r
+            g[key][r.job.label][r.job.seed] = r
     return g
 
 
@@ -124,10 +124,11 @@ def verdict(per_seed: list[float], lo: float, hi: float) -> str:
     return "no clear difference"
 
 
-def gap_tables(runs: list[Run]) -> tuple[list[dict], list[dict]]:
+def gap_tables(runs: list[Run], comparisons=COMPARISONS) -> tuple[list[dict], list[dict]]:
+    """Paired per-seed differences for each (A, B, label, primary) comparison."""
     rows, ep_rows = [], []
     for (cond, cell, control), agents in sorted(_groups(runs).items()):
-        for a, b, label, primary in COMPARISONS:
+        for a, b, label, primary in comparisons:
             if a not in agents or b not in agents:
                 continue
             seeds = sorted(set(agents[a]) & set(agents[b]))

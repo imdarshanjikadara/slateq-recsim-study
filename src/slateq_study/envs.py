@@ -28,6 +28,10 @@ def _choice_model_class(name: str):
         from slateq_study.choice_compat import proportional_cascade_cls
 
         return proportional_cascade_cls()
+    if name == "paper_cascade":  # SlateQ paper's cascade, our own class (Phase 6b E4)
+        from slateq_study.paper_cascade import paper_cascade_cls
+
+        return paper_cascade_cls()
     return getattr(choice_model, CHOICE_MODELS[name])
 
 

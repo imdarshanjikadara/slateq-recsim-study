@@ -36,7 +36,7 @@ Every number in this repository's documents is produced by code from files in `r
 - **Environment.** RecSim Interest Evolution, unmodified (`third_party/recsim`, pinned). A user has a time budget; each step the recommender shows k of N freshly sampled videos; the user clicks one or none. Reward = watch time. Clicking a high-quality video refunds part of the budget, so the session lasts longer: this is the long-term trade-off.
 - **Policies.**
   - `slateq`: decomposed SlateQ (top-k selection, SARSA target), a PyTorch port of RecSim's `SlateDecompQAgent`.
-  - `learned_myopic`: the same agent with γ = 0. This is the **primary comparison**, because only the planning horizon differs.
+  - `learned_myopic`: the same agent with γ = 0. This is the **primary comparison**: same architecture, data, training budget and tuning budget, but each agent keeps its own tuned learning rate (PROTOCOL 12.6), so the horizon is the main difference, not the only one.
   - `oracle_myopic`: RecSim's greedy pCTR agent given the true user state. It is privileged: a ceiling for click-maximisers.
   - `random`.
 - **Protocol** ([`docs/PROTOCOL.md`](docs/PROTOCOL.md)). Fixed before any result was seen:

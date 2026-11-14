@@ -15,6 +15,7 @@ LADDER = [
     ("multinomial_proportional", 3.0),
     ("multinomial_logit", 1.0),
     ("proportional_cascade", 1.0),
+    ("paper_cascade", 1.0),  # Phase 6b E4
 ]
 
 
@@ -34,6 +35,7 @@ def test_true_choice_model_and_no_click_mass_reach_the_env(cm, ncm):
             "multinomial_proportional": "MultinomialProportionalChoiceModel",
             "multinomial_logit": "MultinomialLogitChoiceModel",
             "proportional_cascade": "ProportionalCascadeChoiceModel",
+            "paper_cascade": "PaperCascadeChoiceModel",
         }[cm]
     )
     assert true_user_state(env).choice_features["no_click_mass"] == ncm
@@ -112,3 +114,38 @@ def test_cascade_compat_matches_recsim_math():
     np.testing.assert_allclose(ours.scores, ref.scores)
     np.testing.assert_allclose(ours._score_no_click, ref._score_no_click)
     assert issubclass(type(ours), rcm.CascadeChoiceModel)
+
+
+def test_paper_cascade_click_probabilities():
+    """SlateQ paper Section 6.3: position j inspected with prob 1.0 * 0.65**j; an inspected item is
+    clicked with its conditional-model probability; probabilities sum to 1 with no-click."""
+    from recsim import choice_model as rcm
+
+    from slateq_study.paper_cascade import cascade_click_probs, paper_cascade_cls
+
+    feats = {"min_normalizer": -1.0, "no_click_mass": 1.0, "score_scaling": 0.05}
+    model = paper_cascade_cls()(feats)
+    raw = np.array([0.3, -0.2, 0.9])
+    model._score_documents_helper = staticmethod(lambda u, d: raw.copy())
+    model.score_documents(None, None)
+    s = raw + 1.0
+    p = s / (s.sum() + 2.0)  # conditional model, no-click score = 1 + 1
+    expected = [
+        p[0],
+        (1 - p[0]) * 0.65 * p[1],
+        (1 - p[0]) * (1 - 0.65 * p[1]) * 0.65**2 * p[2],
+    ]
+    np.testing.assert_allclose(model.scores, expected)
+    np.testing.assert_allclose(model.scores.sum() + model.score_no_click, 1.0)
+    np.testing.assert_allclose(cascade_click_probs(p)[0], expected)
+    assert issubclass(type(model), rcm.CascadeChoiceModel)  # so the oracle uses D11 ranking
+
+
+def test_paper_cascade_runs_full_episodes():
+    from slateq_study.harness import run_episode
+
+    agent = make_agent(
+        "random", make_env(EnvConfig(choice_model="paper_cascade"), 1).action_space, 3
+    )
+    rec = run_episode(agent, EnvConfig(choice_model="paper_cascade"), env_seed=4242).record
+    assert rec.length > 0 and np.isfinite(rec.total_reward)

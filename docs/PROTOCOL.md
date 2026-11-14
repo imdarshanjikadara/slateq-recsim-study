@@ -133,6 +133,40 @@ centered RMSProp (lr 2.5e-4, decay 0.95, eps 1e-5), γ 0.99 (learned-myopic: γ 
 
 **15.4 Outcome.** Per rung: the primary gap SlateQ − learned-myopic with seed-bootstrap CI (as §14.3), plus absolute rewards of all four agents, since the choice model changes click rates and therefore episode length and reward scale. The gap is also reported relative to the rung's learned-myopic reward. No ordering of rungs by "degree" beyond the table above is claimed from the data.
 
+## 16. Phase 6b addendum: follow-up experiments E1–E5 (fixed 2026-11-13, before any Phase 6b run)
+
+**16.0 Status.** This section was written **after the Phase 6 results (§14, §15) were seen**. The experiments below were chosen because of those results and because of the literature review (`docs/literature/`). They are **follow-up, exploratory analyses**. They do not change any Phase 6 verdict, and they are reported in a separate addendum. Everything else stays as fixed earlier: §12.6 hyperparameters, run seeds 0–4, 2400 evaluation episodes, common random numbers, the §7 statistics and the §14.6 verdict rule. No tuning is done in Phase 6b; nothing is rerun or dropped because of its outcome. Every result is reported however it comes out, including nulls.
+
+**16.1 Reused runs.** Random, oracle-myopic, SlateQ (γ 0.99, lr 1e-3) and learned-myopic (γ 0, lr 2.5e-4) at (10, 3) and (80, 3) are **not rerun**. Phase 6b compares against the `rq2` runs of the same cell, seed and evaluation episodes. The agent, environment and harness code used by these runs is unchanged in Phase 6b; `make demo` (replay from saved checkpoints equals the recorded evaluation) is run on the Phase 6b code as a check.
+
+**16.2 Variants.** A variant is a learned agent with one named setting changed (`configs/experiments/phase6b*.yaml`, `sweep.check_variant`): only `learning_rate`, `gamma`, or the training budget by a whole-number factor. All other settings come from §12.6.
+
+**16.3 E1: matched learning rates** (cells (10, 3) and (80, 3)).
+- New runs: learned-myopic at lr 1e-3 (`lm_lr1e-3`); SlateQ at lr 2.5e-4 (`slateq_lr2.5e-4`).
+- Comparisons: SlateQ − learned-myopic **both at lr 1e-3**; SlateQ − learned-myopic **both at lr 2.5e-4**. Secondary: `lm_lr1e-3` − oracle-myopic.
+- Reading, fixed now: if both matched-lr gaps are "A higher" (§14.6) in a cell, the SlateQ advantage in that cell does not depend on the learning-rate difference. If either is not, we report that it does depend on it, for that cell.
+
+**16.4 E2: planning horizon** (same two cells, all at lr 1e-3, target period 1000).
+- New runs: SlateQ with γ ∈ {0.5, 0.9, 0.95}. The γ = 0 point is `lm_lr1e-3` (E1) and the γ = 0.99 point is the rq2 SlateQ run.
+- Comparisons: each γ > 0 minus γ = 0 (same lr); each γ minus oracle-myopic.
+- Reading: the shape over the five γ values is described from the CIs only. No curve is fitted, and no "best γ" is claimed beyond these five values.
+
+**16.5 E3: training budget at (80, 3).**
+- New runs: SlateQ and learned-myopic with 2 × the frozen budget (600K steps), all else frozen (`slateq_2x`, `lm_2x`).
+- Comparisons: `slateq_2x` − `lm_2x`; `lm_2x` − oracle-myopic; `slateq_2x` − oracle-myopic; and within each agent, 600K − 300K.
+- Reading: if `lm_2x` − oracle-myopic is closer to 0 than the 300K value and its CI changes from "A lower" to "no clear difference", the learned-myopic shortfall at N = 80 is consistent with under-training. Two budget points cannot show a trend beyond that.
+
+**16.6 E4: the SlateQ paper's cascade** (cell (10, 3), all four agents).
+- The user's TRUE choice model is the exponential cascade of Ie et al. 2019, §6.3: position j inspected with probability β0·β^j, β0 = 1.0, β = 0.65; an inspected item is clicked with its conditional-model probability (no-click option kept); otherwise the user moves to the next item (`src/slateq_study/paper_cascade.py`). We read j as starting at 0 (top item always inspected); the paper does not say. SlateQ still assumes the conditional model (§15.1). The oracle ranks by the proportional model (DEVIATIONS D11).
+- Outcome: exactly as §15.4 (primary gap SlateQ − learned-myopic, secondary comparisons, absolute rewards, gap relative to learned-myopic). Compared descriptively with the §15 severe rung and with the paper's §7.3 table (different implementation: context only).
+
+**16.7 E5: clicks versus watch time** (analysis only; no new runs). Uses every completed run of rq2, rq3 and E4.
+- Per run, pooled over its 2400 evaluation episodes: **click rate** = total clicks / total recommendation steps; **clicks per session**; **watch time per click** = total reward / total clicks; **watch time per session** = mean total reward (the primary metric of §5).
+- Comparisons in every cell and condition, with §7 statistics and the §14.6 rule applied to each metric separately: oracle-myopic (the best click-maximiser) − SlateQ, and learned-myopic − SlateQ.
+- Reading, fixed now: the question is whether the click-maximiser gets **more clicks but less watch time** than SlateQ. Each cell is classed by the two verdicts (click rate, watch time per session). All cells are reported, whatever the pattern. This is a statement about this simulator only, not about any real platform.
+
+**16.8 Reporting.** Tables in `results/phase6b/` (written by `scripts/phase6b_analyze.py`), numbers in `docs/NUMBERS.md` (generated), interpretation in a `docs/RESULTS.md` addendum. Many comparisons are made; no multiple-comparison correction is applied, so isolated verdicts are read with care. Failed runs are reported as failed and never averaged or retried (§14.2).
+
 ## 13. Change log
 
 | Date | Change | Reason |
@@ -141,3 +175,5 @@ centered RMSProp (lr 2.5e-4, decay 0.95, eps 1e-5), γ 0.99 (learned-myopic: γ 
 | 2026-11-06 | §12 rules for learned agents (defaults, seeds, budget rule, tuning grid, selection, n re-check) fixed before any Phase 3 run | Phase 3, approved T1–T6 |
 | 2026-11-06 | §12.6 filled in: budget 300K, selected SlateQ / learned-myopic configs, eval_episodes stays 2400 | Outcome of the pre-registered rules 12.3–12.5 |
 | 2026-11-06 | §14 sweep grid and RQ1/RQ2 analysis plan (primary = SlateQ − learned-myopic), §15 RQ3 ladder | Before any eval-stream run of a learned agent; primary comparison chosen by the student |
+| 2026-11-13 | Clarification of §14.3: "only γ differs" is not literally true. The two learned agents also use different learning rates, each tuned with the same budget (§12.4–12.6). The primary comparison and its verdicts are unchanged; E1 (§16.3) measures the effect. | Literature-track audit (docs/literature/WORDING_ISSUES.md) |
+| 2026-11-13 | §16 Phase 6b addendum (E1–E5), registered **after** the Phase 6 results were seen and before any Phase 6b run | Student-approved follow-up plan |

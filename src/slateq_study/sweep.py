@@ -50,7 +50,12 @@ SPEC_KEYS = {
     "train_steps",
     "eval_episodes",
     "frozen_from",
+    "variants",
 }
+# Phase 6b (PROTOCOL 16): a "variant" is a learned agent with one or two frozen settings changed.
+# Only these settings may be changed, and the training budget only by a whole-number factor.
+VARIANT_PARAMS = {"learning_rate", "gamma"}
+VARIANT_KEYS = {"name", "agent", "params", "budget_factor"}
 OK_EXIT = (0, 3)  # completed now / already completed
 CLEAN_FAIL_EXIT = (1, 2)  # run failed and wrote error.json / bad config: never retried
 
@@ -68,10 +73,16 @@ class Job:
     condition: str  # name of the env's true choice-model condition (RQ3); "matched" otherwise
     control: bool = False  # degenerate k == N control cell (excluded from the main analysis)
     key: str = field(default="", compare=False)
+    variant: str = ""  # Phase 6b variant name (e.g. "slateq_g0.9"); "" for a plain agent
 
     @property
     def learned(self) -> bool:
         return self.agent in LEARNED
+
+    @property
+    def label(self) -> str:
+        """Name used in result tables: the variant name if there is one, else the agent name."""
+        return self.variant or self.agent
 
 
 # ------------------------------------------------------------------------------------- spec
@@ -98,6 +109,8 @@ def load_spec(path: Path) -> dict:
             raise SpecError(f"unknown condition keys in {c}")
         if c["choice_model"] not in CHOICE_MODELS:
             raise SpecError(f"unknown choice model {c['choice_model']!r}")
+    for v in spec.get("variants") or []:
+        check_variant(v)
     if not spec.get("pilot") and ("train_steps" in spec or "eval_episodes" in spec):
         raise SpecError(
             "train_steps / eval_episodes come from the frozen Phase 3 files; "
@@ -122,6 +135,20 @@ def frozen(results_root: Path = RESULTS, frozen_from: str = "phase3") -> dict:
         "params": params,
         "eval_episodes": int(tune["episode_recheck"]["eval_episodes"]),
     }
+
+
+def check_variant(v: dict) -> None:
+    """A variant changes only learning_rate and/or gamma of a learned agent, or its budget."""
+    if not isinstance(v, dict) or set(v) - VARIANT_KEYS or not {"name", "agent"} <= set(v):
+        raise SpecError(f"a variant needs name and agent (and optional params, budget_factor): {v}")
+    if v["agent"] not in LEARNED:
+        raise SpecError(f"variants are for learned agents only, got {v['agent']!r}")
+    bad = set(v.get("params") or {}) - VARIANT_PARAMS
+    if bad:
+        raise SpecError(f"variant {v['name']}: only {sorted(VARIANT_PARAMS)} may change, not {bad}")
+    factor = v.get("budget_factor", 1)
+    if not isinstance(factor, int) or factor < 1:
+        raise SpecError(f"variant {v['name']}: budget_factor must be a whole number >= 1")
 
 
 MATCHED = {"name": "matched", "choice_model": "multinomial_proportional", "no_click_mass": 1.0}
@@ -152,12 +179,16 @@ def manifest(spec: dict, results_root: Path = RESULTS) -> list[Job]:
     n_eval = int(spec.get("eval_episodes", fz["eval_episodes"]))
     curves = spec.get("curves") or {}
     curve_cells = {tuple(c) for c in curves.get("cells", [])}
+    # plain agents use the frozen settings; variants change a few of them (PROTOCOL 16)
+    entries = [{"name": "", "agent": a} for a in spec["agents"]]
+    entries += spec.get("variants") or []
     jobs = []
     for seed in spec["seeds"]:
         for cond in conditions(spec):
             per_seed = []
             for (n, k), control in cells(spec):
-                for agent in spec["agents"]:
+                for entry in entries:
+                    agent, variant = entry["agent"], entry["name"]
                     env = {"num_candidates": n, "slate_size": k}
                     for key in ("choice_model", "no_click_mass"):  # defaults left implicit
                         if cond[key] != MATCHED[key]:
@@ -170,8 +201,11 @@ def manifest(spec: dict, results_root: Path = RESULTS) -> list[Job]:
                         "trace_episodes": int(spec.get("trace_episodes", 0)),
                     }
                     if agent in LEARNED:
-                        cfg["agent"]["params"] = dict(fz["params"][agent])
-                        cfg["train_steps"] = steps
+                        cfg["agent"]["params"] = {
+                            **fz["params"][agent],
+                            **(entry.get("params") or {}),
+                        }
+                        cfg["train_steps"] = steps * int(entry.get("budget_factor", 1))
                         if (n, k) in curve_cells:
                             cfg["eval_every"] = int(curves["eval_every"])
                             cfg["curve_episodes"] = int(curves["curve_episodes"])
@@ -185,7 +219,8 @@ def manifest(spec: dict, results_root: Path = RESULTS) -> list[Job]:
                             (n, k),
                             name,
                             control,
-                            key=f"{agent}|N{n}k{k}|{name}|seed{seed}",
+                            key=f"{variant or agent}|N{n}k{k}|{name}|seed{seed}",
+                            variant=variant,
                         )
                     )
             per_seed.sort(key=lambda j: (not j.learned, -j.cell[0], -j.cell[1]))
@@ -406,6 +441,7 @@ def collect(jobs: list[Job], results_root: Path = RESULTS) -> list[dict]:
         st = job_status(j, results_root)
         row = {
             "agent": j.agent,
+            **({"variant": j.variant} if j.variant else {}),
             "num_candidates": j.cell[0],
             "slate_size": j.cell[1],
             "condition": j.condition,

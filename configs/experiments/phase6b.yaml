@@ -1,0 +1,21 @@
+# Phase 6b, E1 + E2 (PROTOCOL 16). Registered after the Phase 6 results were seen.
+# Baselines (random, oracle-myopic, SlateQ at gamma 0.99 / lr 1e-3, learned-myopic at lr 2.5e-4) are
+# NOT rerun: they are the rq2 runs of the same cells, seeds and eval episodes (common random numbers).
+# Every setting not listed under a variant comes from the frozen Phase 3 files (PROTOCOL 12.6).
+experiment: phase6b
+description: matched learning rates (E1) and the planning-horizon curve over gamma (E2)
+grid:
+  num_candidates: [10, 80]
+  slate_size: [3]
+seeds: [0, 1, 2, 3, 4]
+agents: []
+trace_episodes: 0
+variants:
+  # E1: each agent at the other agent's tuned learning rate
+  - {name: lm_lr1e-3, agent: learned_myopic, params: {learning_rate: 0.001}}
+  - {name: slateq_lr2.5e-4, agent: slateq, params: {learning_rate: 0.00025}}
+  # E2: SlateQ at lr 1e-3 with a shorter horizon. gamma = 0 at lr 1e-3 is lm_lr1e-3 above,
+  # gamma = 0.99 at lr 1e-3 is the rq2 SlateQ run.
+  - {name: slateq_g0.5, agent: slateq, params: {gamma: 0.5}}
+  - {name: slateq_g0.9, agent: slateq, params: {gamma: 0.9}}
+  - {name: slateq_g0.95, agent: slateq, params: {gamma: 0.95}}

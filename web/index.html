@@ -141,7 +141,7 @@
           <h3>Policies</h3>
           <ul>
             <li><strong>SlateQ</strong> learns per-item long-term values (&gamma; = 0.99) and picks the top-k by click-probability &times; value.</li>
-            <li><strong>Learned myopic</strong> is the identical agent with &gamma; = 0: same network, data and budget, so only the planning horizon differs. This is the primary comparison.</li>
+            <li><strong>Learned myopic</strong> is the same agent with &gamma; = 0: same architecture, data, training budget and tuning budget. Each agent uses its own tuned learning rate, so the horizon is the main difference but not the only one. This is the primary comparison.</li>
             <li><strong>Oracle myopic</strong> reads the user's true interests and ranks by click probability: the best a click-maximiser can do. It has privileged information.</li>
             <li><strong>Random</strong> picks k candidates uniformly.</li>
           </ul>

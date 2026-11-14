@@ -139,3 +139,34 @@ def test_rq3_conditions_reach_configs():
     assert conds["moderate_logit"].choice_model == "multinomial_logit"
     assert conds["severe_cascade"].choice_model == "proportional_cascade"
     assert all(j.cell == (10, 3) for j in jobs)
+
+
+def test_phase6b_variants_change_only_the_named_settings():
+    fz = sweep.frozen()
+    jobs = sweep.manifest(sweep.load_spec(SPECS / "phase6b.yaml"))
+    assert len(jobs) == 5 * 2 * 5  # variants x cells x seeds
+    by = {j.key: j for j in jobs}
+    lm = by["lm_lr1e-3|N10k3|matched|seed0"]
+    assert lm.agent == "learned_myopic" and lm.label == "lm_lr1e-3"
+    assert lm.cfg["agent"]["params"] == {**fz["params"]["learned_myopic"], "learning_rate": 0.001}
+    g = by["slateq_g0.9|N80k3|matched|seed4"]
+    assert g.cfg["agent"]["params"] == {**fz["params"]["slateq"], "gamma": 0.9}
+    assert all(j.cfg["train_steps"] == fz["train_steps"] for j in jobs)
+    budget = sweep.manifest(sweep.load_spec(SPECS / "phase6b_budget.yaml"))
+    assert {j.cfg["train_steps"] for j in budget} == {2 * fz["train_steps"]}
+    assert all(j.cfg["agent"]["params"] == fz["params"][j.agent] for j in budget)
+
+
+def test_variants_cannot_change_other_settings(tmp_path):
+    bad = [{"name": "x", "agent": "slateq", "params": {"target_update_period": 4000}}]
+    with pytest.raises(sweep.SpecError):
+        sweep.load_spec(_spec(tmp_path, variants=bad))
+    with pytest.raises(sweep.SpecError):
+        sweep.load_spec(_spec(tmp_path, variants=[{"name": "x", "agent": "random"}]))
+
+
+def test_plain_agent_jobs_are_unchanged_by_the_variant_feature():
+    """rq2 jobs keep their keys and labels, so earlier results are found as before."""
+    jobs = sweep.manifest(sweep.load_spec(SPECS / "rq2.yaml"))
+    assert all(j.variant == "" and j.label == j.agent for j in jobs)
+    assert all(j.key.startswith(j.agent + "|") for j in jobs)

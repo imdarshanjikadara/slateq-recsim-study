@@ -1,0 +1,15 @@
+# Phase 6b, E4 (PROTOCOL 16). Registered after the Phase 6 results were seen.
+# The user's TRUE choice model is the SlateQ paper's exponential cascade (Section 6.3:
+# beta_0 = 1.0, beta = 0.65, base probability = the conditional model's probability).
+# SlateQ still assumes the ordinary conditional model (PROTOCOL 15.1). All four agents, frozen
+# settings, no re-tuning.
+experiment: phase6b_cascade
+description: SlateQ vs myopic when users follow the SlateQ paper's cascade model (E4)
+grid:
+  num_candidates: [10]
+  slate_size: [3]
+seeds: [0, 1, 2, 3, 4]
+agents: [random, oracle_myopic, learned_myopic, slateq]
+trace_episodes: 5
+conditions:
+  - {name: paper_cascade, choice_model: paper_cascade, no_click_mass: 1.0}
