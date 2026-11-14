@@ -28,3 +28,4 @@
 | Sweeps | running | phase6b_cascade (E4) -> phase6b (E1, E2) -> phase6b_budget (E3), 4 workers. Log: results/logs/phase6b_chain.log. |
 | Singha Roy 2023 + TORS | done (E3) | No myopic baseline in either (skipped on purpose, γ = 1). No RQ2 overlap. NOTES, OVERLAP_MATRIX, POSITIONING, RELATED_WORK_DRAFT, CANDIDATES, SEED_VERIFIED, FINAL_SUMMARY, QA, LIT_AUDIT A4 updated. Bib year corrected to 2026 (PDF), key kept. |
 | Port validity | done | OUR_SETUP_FACTS "Independent evidence" section; README limitation rewritten. The report does not exist yet: its limitations section must carry the same text (Phase 8). |
+| Audit correction | done | LIT_AUDIT A1 was itself wrong: RecSim IE as used (UtilityModelVideoSampler) fixes video length at 4.0, like the SlateQ paper. NOTE, RELATED_WORK_DRAFT, DISCREPANCIES row 12 and LIT_AUDIT corrected. |

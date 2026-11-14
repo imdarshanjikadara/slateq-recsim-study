@@ -54,7 +54,7 @@ A FedSlate study [deng2025fedslate] builds a federated variant of SlateQ in a Re
 
 | Aspect | Ie et al. 2019 (§6-7) | This project |
 |---|---|---|
-| Environment | Stylised simulator of §6: budget 200, no-click cost 0.5 (as in RecSim IE); fixed document length 4 (RecSim IE samples mean 4.3, sd 1) | RecSim Interest Evolution, unmodified (pinned commit) |
+| Environment | Stylised simulator of §6: budget 200, no-click cost 0.5 (as in RecSim IE); fixed document length 4 (RecSim IE's `UtilityModelVideoSampler` also uses 4.0) | RecSim Interest Evolution, unmodified (pinned commit) |
 | Candidates m / N, slate size k | m = 10, k = 3 only | N ∈ {5, 10, 20, 40, 80} × k ∈ {2, 3, 5}, plus control (5, 5) |
 | Agent variant | SARSA-TS/GS/OS, several Q-learning variants | SARSA-TS (PyTorch port of RecSim's `SlateDecompQAgent`) |
 | γ (long-term) | 1 | 0.99 |

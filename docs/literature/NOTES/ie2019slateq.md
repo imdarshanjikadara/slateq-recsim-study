@@ -16,7 +16,7 @@
 
 | Item | Value |
 |---|---|
-| Environment | Stylised simulator described in §6: topics, quality, user interest, time budget. The paper does not call it RecSim. It matches RecSim Interest Evolution on budget 200 and no-click cost 0.5 (p. 21; RecSim `interest_evolution.py:430-432`). It **differs** on document length: the paper uses a fixed length of 4 (p. 21), while RecSim samples video length with mean 4.3 and sd 1.0 (`interest_evolution.py:170-171`). So the two simulators are related but not identical. |
+| Environment | Stylised simulator described in §6: topics, quality, user interest, time budget. The paper does not call it RecSim. It matches RecSim Interest Evolution on budget 200 and no-click cost 0.5 (p. 21; RecSim `interest_evolution.py:430-432`), and on document length: the paper uses a fixed length of 4 (p. 21), and RecSim's `UtilityModelVideoSampler`, used by RecSim's `create_environment` and by our `envs.py`, also fixes `video_length=4.0` (`interest_evolution.py:208-215, 649`). *(Corrected 2026-11-13: an earlier audit wrongly cited the unused `IEvVideoSampler`, mean 4.3.)* We have not checked every simulator detail, so we call them closely related, not identical. |
 | Candidates and slate size | m = 10 candidates per step, k = 3 (§6.5, p. 22). **Only this one size is used in simulation.** The reason given is that small sizes allow enumerating slates for the FSQ comparison (p. 22). |
 | Topics | \|T\| = 20 (§7.2, p. 24) |
 | Discount factor | LTV policies use γ = 1 (p. 22); no discounting is needed because sessions terminate (p. 21). MYOP uses γ = 0. |

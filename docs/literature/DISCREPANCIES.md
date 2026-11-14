@@ -32,7 +32,7 @@
 | 9 | Metric | Average return per session | Mean total reward (watch time) per session | SUPPORTED: equivalent in kind. Not an explanation. |
 | 10 | What the training data looks like under cascade | not described | Learned agents train in the cascade environment, so their replay holds mostly no-click transitions, which are not trained on (D6) | PLAUSIBLE. Far fewer effective training updates per step than under the matched model. |
 | 11 | Implementation (TF Dopamine vs PyTorch port) | TF | PyTorch, component-level equivalence only (OUR_SETUP_FACTS a) | SPECULATIVE as an explanation. We have no evidence of a port error, but no end-to-end cross-check either. |
-| 12 | Simulator itself | §6 simulator: fixed document length 4 (p. 21) | RecSim IE: video length ~ N(4.3, 1.0) (`interest_evolution.py:170-171`); budget and no-click cost match | SUPPORTED that the simulators are related but not identical. As an explanation for the cascade difference: SPECULATIVE (it applies equally to the matched model, where our results agree in direction). |
+| 12 | Simulator itself | §6 simulator: fixed document length 4, budget 200, no-click cost 0.5 (p. 21) | RecSim IE as used by us: fixed `video_length=4.0` (`UtilityModelVideoSampler`, `interest_evolution.py:208-215`), budget 200, no-click cost 0.5. *(Corrected 2026-11-13; an earlier version cited the unused mean-4.3 sampler.)* | SUPPORTED that these parameters match. Other details not checked. Not an explanation for the cascade difference. |
 
 ### Bottom line
 
