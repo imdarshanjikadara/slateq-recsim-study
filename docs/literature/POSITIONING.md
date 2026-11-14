@@ -23,6 +23,8 @@ Our numbers come from `docs/NUMBERS.md` (generated) and `docs/SUPPLEMENT_STATS.m
 | A13 | "SlateQ and RecSim remain in use as a baseline and simulator in 2024-2025 work." | - | singharoy2024news (E3); singharoy2023scalable (E3); singharoy2025dontgetbored (E3); deng2025fedslate (E2) |
 | A14 | "Simulation-based evaluation avoids the myopic bias of next-item offline protocols, but results hold only for the simulator." | - | deffayet2022offline (E2-E3) |
 | A15 | Motivation wording about real systems (use only this): "The SlateQ paper notes that practical recommender systems largely focus on myopic prediction of a user's immediate response (Ie et al. 2019, p. 2), such as predicted click-through rate or watch time (p. 4). The same paper reports a live experiment on YouTube in which SlateQ improved engagement over myopic recommendations (p. 3)." Our oracle-myopic baseline is the simulator's best click-maximiser. | - | ie2019slateq (E3): arXiv version pp. 2-4 (checked 2026-11-13) |
+| A16 | Phase 6b claims (exploratory, registered after Phase 6 results; always say so): "The SlateQ advantage did not depend on the learning-rate difference (E1); every γ > 0 tested beat the oracle-myopic (E2); under the SlateQ paper's cascade the advantage was clear (E4); the click-maximiser matched SlateQ's click rate but had shorter sessions (E5)." Quote numbers only from NUMBERS.md. | NUMBERS "Phase 6b" | PROTOCOL 16; RESULTS Phase 6b addendum |
+| A17 | E5 must be described as: "no clear difference in click rate in 18 of 19 conditions; less watch time per session in 17 of 19". Never as "the click-maximiser gets more clicks". | NUMBERS E5 | - |
 
 ## (b) DISALLOWED claims (do not write these anywhere)
 

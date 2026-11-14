@@ -140,8 +140,8 @@ def phase6b_lines(d: Path, rel) -> list[str]:
             "Each difference is the myopic agent minus SlateQ, with the PROTOCOL 14.6 verdict.",
             "",
             "| condition | (N, k) | comparison | click rate diff [CI] | verdict | "
-            "watch time diff [CI] | verdict | pattern |",
-            "|---|---|---|---|---|---|---|---|",
+            "clicks per session diff [CI] | verdict | watch time diff [CI] | verdict | pattern |",
+            "|---|---|---|---|---|---|---|---|---|---|",
         ]
         for _, r in e5.iterrows():
             click = (
@@ -153,15 +153,57 @@ def phase6b_lines(d: Path, rel) -> list[str]:
                 f"[{f(r.watch_per_session_ci95_low, 2, True)}, "
                 f"{f(r.watch_per_session_ci95_high, 2, True)}]"
             )
+            per_session = (
+                f"{f(r.clicks_per_session_diff, 2, True)} "
+                f"[{f(r.clicks_per_session_ci95_low, 2, True)}, "
+                f"{f(r.clicks_per_session_ci95_high, 2, True)}]"
+            )
             cond = f"{r.condition}{' (control)' if r.control else ''}"
             L.append(
                 f"| {cond} | ({r.num_candidates}, {r.slate_size}) | {r.comparison} | {click} | "
-                f"{r.click_rate_verdict} | {watch} | {r.watch_per_session_verdict} | {r.pattern} |"
+                f"{r.click_rate_verdict} | {per_session} | {r.clicks_per_session_verdict} | "
+                f"{watch} | {r.watch_per_session_verdict} | {r.pattern} |"
             )
         L += ["", "Pattern counts (all cells and conditions, controls included):", ""]
         for comp, g in e5.groupby("comparison"):
             counts = g.pattern.value_counts()
             L.append(f"- {comp}: " + "; ".join(f"{k}: {v}" for k, v in counts.items()) + ".")
+        L += ["", "Verdict counts per metric (myopic agent minus SlateQ):", ""]
+        metrics = {
+            "click rate": "click_rate_verdict",
+            "clicks per session": "clicks_per_session_verdict",
+            "watch time per click": "watch_per_click_verdict",
+            "watch time per session": "watch_per_session_verdict",
+        }
+        for comp, g in e5.groupby("comparison"):
+            for name, col in metrics.items():
+                counts = g[col].value_counts()
+                L.append(
+                    f"- {comp}, {name}: " + "; ".join(f"{k}: {v}" for k, v in counts.items()) + "."
+                )
+        cwa = d / "clicks_watch.csv"
+        if cwa.exists():
+            a = pd.read_csv(cwa)
+            focus = a[
+                ((a.condition == "matched") & (a.slate_size == 3) & a.num_candidates.isin([10, 80]))
+                | (a.condition == "paper_cascade")
+            ]
+            L += [
+                "",
+                "Per-agent click and watch metrics in the three focus cells "
+                f"(source: `{rel(cwa)}`):",
+                "",
+                "| condition | (N, k) | agent | click rate | clicks per session | "
+                "watch time per click | watch time per session |",
+                "|---|---|---|---|---|---|---|",
+            ]
+            for _, r in focus.iterrows():
+                L.append(
+                    f"| {r.condition} | ({r.num_candidates}, {r.slate_size}) | "
+                    f"{P6B_LABEL.get(r.agent, r.agent)} | {f(r.click_rate, 3)} | "
+                    f"{f(r.clicks_per_session, 1)} | {f(r.watch_per_click, 3)} | "
+                    f"{f(r.watch_per_session, 2)} |"
+                )
         L.append("")
     return L
 

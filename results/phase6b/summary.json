@@ -1,0 +1,29 @@
+{
+  "runs": {
+    "ok": 80
+  },
+  "n_gap_rows": 32,
+  "provenance": {
+    "git_sha": "28cf3953f9d81434d950ca505dc11be80b570b52",
+    "git_dirty": true,
+    "git_dirty_paths": [
+      "?? docs/AI_ASSISTANCE.md",
+      "?? results/phase6b/",
+      "?? results/phase6b_budget/"
+    ],
+    "recsim_sha": "55e50e4be736d222ffe8c2477ed1981b40f91605",
+    "uv_lock_sha256": "25a14c7100e704de4870ece090de391cad41bc9efd84aef2060c05ea25a4988e",
+    "python": "3.14.7",
+    "platform": "Windows-11-10.0.26300-SP0",
+    "hostname": "Darshan-PC",
+    "packages": {
+      "numpy": "2.5.4",
+      "torch": "2.15.0+cpu",
+      "gymnasium": "1.4.0",
+      "gin-config": "0.5.0",
+      "absl-py": "2.5.1",
+      "pandas": "3.1.1",
+      "scipy": "1.18.1"
+    }
+  }
+}

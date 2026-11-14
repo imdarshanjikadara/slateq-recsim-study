@@ -108,3 +108,167 @@ Session length and clicked quality (mechanism), same source:
 | moderate (multinomial logit) | 62.6 / 62.0 / 62.0 / 73.1 | -0.584 / -0.626 / -0.623 / -0.621 |
 | severe (proportional cascade) | 181.0 / 180.7 / 180.6 / 227.3 | -0.606 / -0.620 / -0.621 / -0.619 |
 
+## Phase 6b (follow-up, registered after the Phase 6 results were seen; PROTOCOL 16)
+
+Source: `results/phase6b/gaps.csv`, `results/phase6b/agents.csv`, `results/phase6b/clicks_watch_gaps.csv` (`python scripts/phase6b_analyze.py`). Phase 6b run status: {'ok': 80}. Tables commit: `28cf3953f9d81434d950ca505dc11be80b570b52`.
+Baselines are the rq2 runs of the same cells and seeds (PROTOCOL 16.1).
+
+### E1: matched learning rates
+
+| comparison | (N, k) | mean | 95% CI | per seed | verdict |
+|---|---|---|---|---|---|
+| E1: SlateQ - learned-myopic, both lr 1e-3 | (10, 3) | +1.53 | [+1.38, +1.71] | 0: +1.54, 1: +1.29, 2: +1.88, 3: +1.46, 4: +1.45 | first higher (clear) |
+| E1: SlateQ - learned-myopic, both lr 2.5e-4 | (10, 3) | +1.53 | [+1.30, +1.78] | 0: +1.22, 1: +1.24, 2: +2.00, 3: +1.56, 4: +1.63 | first higher (clear) |
+| E1: learned-myopic (lr 1e-3) - oracle-myopic | (10, 3) | +0.08 | [-0.04, +0.22] | 0: -0.09, 1: +0.14, 2: -0.05, 3: +0.05, 4: +0.33 | no clear difference |
+| E1: SlateQ - learned-myopic, both lr 1e-3 | (80, 3) | +36.58 | [+31.18, +41.32] | 0: +34.76, 1: +43.00, 2: +41.53, 3: +26.04, 4: +37.55 | first higher (clear) |
+| E1: SlateQ - learned-myopic, both lr 2.5e-4 | (80, 3) | +49.64 | [+44.79, +55.05] | 0: +41.22, 1: +58.50, 2: +53.32, 3: +48.21, 4: +46.96 | first higher (clear) |
+| E1: learned-myopic (lr 1e-3) - oracle-myopic | (80, 3) | -9.41 | [-11.59, -7.53] | 0: -10.75, 1: -12.85, 2: -8.72, 3: -8.66, 4: -6.05 | first lower (clear) |
+
+### E2: planning horizon (all at lr 1e-3)
+
+| comparison | (N, k) | mean | 95% CI | per seed | verdict |
+|---|---|---|---|---|---|
+| E2: gamma 0.5 - gamma 0 (lr 1e-3) | (10, 3) | +0.64 | [+0.56, +0.78] | 0: +0.62, 1: +0.58, 2: +0.92, 3: +0.55, 4: +0.55 | first higher (clear) |
+| E2: gamma 0.9 - gamma 0 (lr 1e-3) | (10, 3) | +0.95 | [+0.40, +1.32] | 0: +1.38, 1: +1.28, 2: +0.94, 3: +1.27, 4: -0.11 | no clear difference |
+| E2: gamma 0.95 - gamma 0 (lr 1e-3) | (10, 3) | +1.55 | [+1.20, +1.83] | 0: +1.31, 1: +1.79, 2: +1.81, 3: +1.88, 4: +0.95 | first higher (clear) |
+| E2: gamma 0.99 - gamma 0 (lr 1e-3) | (10, 3) | +1.53 | [+1.38, +1.71] | 0: +1.54, 1: +1.29, 2: +1.88, 3: +1.46, 4: +1.45 | first higher (clear) |
+| E2: gamma 0.5 - oracle-myopic | (10, 3) | +0.72 | [+0.60, +0.85] | 0: +0.53, 1: +0.72, 2: +0.87, 3: +0.61, 4: +0.89 | first higher (clear) |
+| E2: gamma 0.9 - oracle-myopic | (10, 3) | +1.03 | [+0.60, +1.36] | 0: +1.29, 1: +1.43, 2: +0.89, 3: +1.32, 4: +0.22 | first higher (clear) |
+| E2: gamma 0.95 - oracle-myopic | (10, 3) | +1.63 | [+1.36, +1.90] | 0: +1.23, 1: +1.94, 2: +1.76, 3: +1.93, 4: +1.28 | first higher (clear) |
+| E2: gamma 0.99 - oracle-myopic | (10, 3) | +1.60 | [+1.46, +1.75] | 0: +1.46, 1: +1.44, 2: +1.83, 3: +1.51, 4: +1.78 | first higher (clear) |
+| E2: gamma 0.5 - gamma 0 (lr 1e-3) | (80, 3) | +17.11 | [+16.13, +18.18] | 0: +16.92, 1: +18.85, 2: +17.79, 3: +16.59, 4: +15.42 | first higher (clear) |
+| E2: gamma 0.9 - gamma 0 (lr 1e-3) | (80, 3) | +33.87 | [+28.61, +40.77] | 0: +36.04, 1: +46.11, 2: +26.41, 3: +31.28, 4: +29.48 | first higher (clear) |
+| E2: gamma 0.95 - gamma 0 (lr 1e-3) | (80, 3) | +37.36 | [+33.02, +41.94] | 0: +37.70, 1: +42.51, 2: +43.50, 3: +30.88, 4: +32.18 | first higher (clear) |
+| E2: gamma 0.99 - gamma 0 (lr 1e-3) | (80, 3) | +36.58 | [+31.18, +41.32] | 0: +34.76, 1: +43.00, 2: +41.53, 3: +26.04, 4: +37.55 | first higher (clear) |
+| E2: gamma 0.5 - oracle-myopic | (80, 3) | +7.70 | [+6.45, +8.96] | 0: +6.16, 1: +6.00, 2: +9.06, 3: +7.93, 4: +9.36 | first higher (clear) |
+| E2: gamma 0.9 - oracle-myopic | (80, 3) | +24.46 | [+20.19, +29.54] | 0: +25.29, 1: +33.27, 2: +17.69, 3: +22.61, 4: +23.43 | first higher (clear) |
+| E2: gamma 0.95 - oracle-myopic | (80, 3) | +27.95 | [+24.57, +31.71] | 0: +26.95, 1: +29.66, 2: +34.78, 3: +22.22, 4: +26.13 | first higher (clear) |
+| E2: gamma 0.99 - oracle-myopic | (80, 3) | +27.17 | [+21.79, +31.75] | 0: +24.01, 1: +30.15, 2: +32.81, 3: +17.38, 4: +31.50 | first higher (clear) |
+
+### E3: twice the training budget at (80, 3)
+
+| comparison | (N, k) | mean | 95% CI | per seed | verdict |
+|---|---|---|---|---|---|
+| E3: SlateQ - learned-myopic, both 600K steps | (80, 3) | +33.81 | [+29.20, +38.41] | 0: +33.23, 1: +26.79, 2: +39.17, 3: +29.60, 4: +40.25 | first higher (clear) |
+| E3: learned-myopic (600K) - oracle-myopic | (80, 3) | -6.23 | [-10.12, -1.80] | 0: -11.88, 1: +2.59, 2: -7.09, 3: -9.87, 4: -4.90 | no clear difference |
+| E3: SlateQ (600K) - oracle-myopic | (80, 3) | +27.58 | [+22.31, +32.85] | 0: +21.35, 1: +29.38, 2: +32.08, 3: +19.74, 4: +35.35 | first higher (clear) |
+| E3: learned-myopic 600K - 300K | (80, 3) | +7.17 | [+0.35, +15.39] | 0: -3.63, 1: +21.90, 2: +6.28, 3: +4.98, 4: +6.34 | no clear difference |
+| E3: SlateQ 600K - 300K | (80, 3) | +0.41 | [-1.52, +2.36] | 0: -2.66, 1: -0.77, 2: -0.72, 3: +2.36, 4: +3.85 | no clear difference |
+
+### E4: the SlateQ paper's cascade (N=10, k=3)
+
+| comparison | (N, k) | mean | 95% CI | per seed | verdict |
+|---|---|---|---|---|---|
+| E4: SlateQ - learned-myopic | (10, 3) | +2.54 | [+2.16, +2.96] | 0: +2.01, 1: +2.24, 2: +2.87, 3: +3.31, 4: +2.28 | first higher (clear) |
+| E4: SlateQ - oracle-myopic | (10, 3) | +2.42 | [+2.11, +2.76] | 0: +1.88, 1: +2.26, 2: +2.69, 3: +3.03, 4: +2.27 | first higher (clear) |
+| E4: SlateQ - random | (10, 3) | +11.30 | [+10.78, +11.75] | 0: +11.54, 1: +10.97, 2: +11.83, 3: +11.77, 4: +10.39 | first higher (clear) |
+| E4: learned-myopic - oracle-myopic | (10, 3) | -0.12 | [-0.21, -0.03] | 0: -0.13, 1: +0.01, 2: -0.18, 3: -0.28, 4: -0.02 | no clear difference |
+| E4: oracle-myopic - random | (10, 3) | +8.88 | [+8.45, +9.35] | 0: +9.66, 1: +8.71, 2: +9.14, 3: +8.75, 4: +8.13 | first higher (clear) |
+
+### Mean watch time per session of each agent or variant
+
+| condition | (N, k) | agent | mean | 95% CI | session length | clicked quality | seeds |
+|---|---|---|---|---|---|---|---|
+| matched | (10, 3) | learned-myopic | 167.50 | [166.95, 168.05] | 59.8 | -0.625 | 5 |
+| matched | (10, 3) | learned-myopic (lr 1e-3) | 167.67 | [167.25, 168.18] | 59.9 | -0.621 | 5 |
+| matched | (10, 3) | oracle-myopic | 167.59 | [167.11, 168.14] | 59.9 | -0.622 | 5 |
+| matched | (10, 3) | random | 160.55 | [160.34, 160.77] | 70.8 | -0.615 | 5 |
+| matched | (10, 3) | SlateQ | 169.20 | [168.79, 169.65] | 60.4 | -0.583 | 5 |
+| matched | (10, 3) | SlateQ (gamma 0.5) | 168.32 | [167.86, 168.78] | 60.1 | -0.604 | 5 |
+| matched | (10, 3) | SlateQ (gamma 0.9) | 168.62 | [167.91, 169.42] | 60.2 | -0.598 | 5 |
+| matched | (10, 3) | SlateQ (gamma 0.95) | 169.22 | [168.75, 169.69] | 60.5 | -0.582 | 5 |
+| matched | (10, 3) | SlateQ (lr 2.5e-4) | 169.03 | [168.50, 169.56] | 60.4 | -0.586 | 5 |
+| matched | (80, 3) | learned-myopic | 186.65 | [184.21, 189.33] | 64.0 | -0.802 | 5 |
+| matched | (80, 3) | learned-myopic (600K steps) | 193.82 | [189.74, 199.35] | 66.5 | -0.677 | 5 |
+| matched | (80, 3) | learned-myopic (lr 1e-3) | 190.64 | [189.40, 191.89] | 65.4 | -0.748 | 5 |
+| matched | (80, 3) | oracle-myopic | 200.05 | [199.03, 201.18] | 68.7 | -0.602 | 5 |
+| matched | (80, 3) | random | 160.35 | [160.14, 160.56] | 70.8 | -0.620 | 5 |
+| matched | (80, 3) | SlateQ | 227.22 | [222.09, 231.64] | 78.3 | -0.186 | 5 |
+| matched | (80, 3) | SlateQ (600K steps) | 227.63 | [222.96, 232.30] | 78.5 | -0.193 | 5 |
+| matched | (80, 3) | SlateQ (gamma 0.5) | 207.75 | [206.83, 208.40] | 71.4 | -0.497 | 5 |
+| matched | (80, 3) | SlateQ (gamma 0.9) | 224.51 | [219.56, 230.54] | 77.3 | -0.251 | 5 |
+| matched | (80, 3) | SlateQ (gamma 0.95) | 228.00 | [224.53, 231.64] | 78.6 | -0.182 | 5 |
+| matched | (80, 3) | SlateQ (lr 2.5e-4) | 236.29 | [233.61, 239.36] | 81.5 | -0.062 | 5 |
+| paper_cascade | (10, 3) | learned-myopic | 153.42 | [152.93, 153.93] | 90.1 | -0.625 | 5 |
+| paper_cascade | (10, 3) | oracle-myopic | 153.54 | [153.06, 154.06] | 90.2 | -0.621 | 5 |
+| paper_cascade | (10, 3) | random | 144.66 | [144.44, 144.92] | 103.4 | -0.614 | 5 |
+| paper_cascade | (10, 3) | SlateQ | 155.96 | [155.48, 156.25] | 91.7 | -0.548 | 5 |
+
+### E5: clicks versus watch time (rq2, rq3 and E4 runs)
+
+Click rate = clicks per recommendation step; watch time = total reward per session. Each difference is the myopic agent minus SlateQ, with the PROTOCOL 14.6 verdict.
+
+| condition | (N, k) | comparison | click rate diff [CI] | verdict | clicks per session diff [CI] | verdict | watch time diff [CI] | verdict | pattern |
+|---|---|---|---|---|---|---|---|---|---|
+| matched | (5, 2) | oracle-myopic - SlateQ | -0.0000 [-0.0001, +0.0001] | no clear difference | -0.14 [-0.19, -0.09] | A lower | -0.53 [-0.77, -0.32] | A lower | no clear difference in clicks, less watch time |
+| matched | (5, 2) | learned-myopic - SlateQ | +0.0001 [-0.0001, +0.0002] | no clear difference | -0.12 [-0.18, -0.07] | A lower | -0.47 [-0.70, -0.27] | A lower | no clear difference in clicks, less watch time |
+| matched | (5, 3) | oracle-myopic - SlateQ | +0.0001 [+0.0000, +0.0002] | no clear difference | -0.04 [-0.06, -0.02] | A lower | -0.17 [-0.23, -0.11] | A lower | no clear difference in clicks, less watch time |
+| matched | (5, 3) | learned-myopic - SlateQ | +0.0001 [+0.0001, +0.0001] | A higher | -0.05 [-0.08, -0.03] | A lower | -0.18 [-0.24, -0.13] | A lower | more clicks, less watch time |
+| matched (control) | (5, 5) | oracle-myopic - SlateQ | -0.0000 [-0.0002, +0.0001] | no clear difference | +0.00 [-0.01, +0.01] | no clear difference | -0.02 [-0.04, -0.00] | no clear difference | no clear difference in clicks, no clear difference in watch time |
+| matched (control) | (5, 5) | learned-myopic - SlateQ | -0.0000 [-0.0002, +0.0001] | no clear difference | +0.00 [-0.01, +0.01] | no clear difference | +0.01 [-0.02, +0.06] | no clear difference | no clear difference in clicks, no clear difference in watch time |
+| matched | (10, 2) | oracle-myopic - SlateQ | -0.0000 [-0.0003, +0.0002] | no clear difference | -0.60 [-0.66, -0.54] | A lower | -2.35 [-2.53, -2.14] | A lower | no clear difference in clicks, less watch time |
+| matched | (10, 2) | learned-myopic - SlateQ | +0.0001 [-0.0001, +0.0001] | no clear difference | -0.58 [-0.65, -0.51] | A lower | -2.28 [-2.54, -2.02] | A lower | no clear difference in clicks, less watch time |
+| matched | (10, 3) | oracle-myopic - SlateQ | -0.0002 [-0.0004, +0.0000] | no clear difference | -0.41 [-0.45, -0.38] | A lower | -1.60 [-1.75, -1.46] | A lower | no clear difference in clicks, less watch time |
+| matched | (10, 3) | learned-myopic - SlateQ | -0.0003 [-0.0005, -0.0000] | no clear difference | -0.44 [-0.48, -0.39] | A lower | -1.70 [-1.85, -1.54] | A lower | no clear difference in clicks, less watch time |
+| matched | (10, 5) | oracle-myopic - SlateQ | -0.0001 [-0.0002, +0.0001] | no clear difference | -0.10 [-0.13, -0.08] | A lower | -0.39 [-0.48, -0.30] | A lower | no clear difference in clicks, less watch time |
+| matched | (10, 5) | learned-myopic - SlateQ | +0.0000 [-0.0002, +0.0002] | no clear difference | -0.11 [-0.13, -0.09] | A lower | -0.41 [-0.50, -0.32] | A lower | no clear difference in clicks, less watch time |
+| matched | (20, 2) | oracle-myopic - SlateQ | +0.0002 [-0.0001, +0.0004] | no clear difference | -1.69 [-2.01, -1.44] | A lower | -6.47 [-7.71, -5.49] | A lower | no clear difference in clicks, less watch time |
+| matched | (20, 2) | learned-myopic - SlateQ | +0.0001 [-0.0002, +0.0004] | no clear difference | -1.94 [-2.28, -1.63] | A lower | -7.44 [-8.75, -6.22] | A lower | no clear difference in clicks, less watch time |
+| matched | (20, 3) | oracle-myopic - SlateQ | +0.0000 [-0.0002, +0.0004] | no clear difference | -1.35 [-1.68, -1.14] | A lower | -5.17 [-6.48, -4.29] | A lower | no clear difference in clicks, less watch time |
+| matched | (20, 3) | learned-myopic - SlateQ | +0.0001 [-0.0001, +0.0004] | no clear difference | -1.33 [-1.78, -1.06] | A lower | -5.07 [-6.87, -4.05] | A lower | no clear difference in clicks, less watch time |
+| matched | (20, 5) | oracle-myopic - SlateQ | +0.0000 [-0.0001, +0.0002] | no clear difference | -0.64 [-0.73, -0.53] | A lower | -2.43 [-2.80, -1.98] | A lower | no clear difference in clicks, less watch time |
+| matched | (20, 5) | learned-myopic - SlateQ | +0.0001 [-0.0000, +0.0002] | no clear difference | -0.63 [-0.72, -0.54] | A lower | -2.40 [-2.82, -2.02] | A lower | no clear difference in clicks, less watch time |
+| matched | (40, 2) | oracle-myopic - SlateQ | +0.0006 [+0.0003, +0.0009] | A higher | -3.93 [-4.72, -3.14] | A lower | -15.18 [-18.25, -12.11] | A lower | more clicks, less watch time |
+| matched | (40, 2) | learned-myopic - SlateQ | +0.0004 [+0.0001, +0.0008] | no clear difference | -4.79 [-5.64, -3.97] | A lower | -18.51 [-21.85, -15.31] | A lower | no clear difference in clicks, less watch time |
+| matched | (40, 3) | oracle-myopic - SlateQ | +0.0002 [-0.0001, +0.0005] | no clear difference | -3.13 [-3.57, -2.70] | A lower | -11.90 [-13.61, -10.19] | A lower | no clear difference in clicks, less watch time |
+| matched | (40, 3) | learned-myopic - SlateQ | +0.0000 [-0.0002, +0.0002] | no clear difference | -3.85 [-4.19, -3.41] | A lower | -14.66 [-15.99, -12.97] | A lower | no clear difference in clicks, less watch time |
+| matched | (40, 5) | oracle-myopic - SlateQ | -0.0001 [-0.0003, +0.0000] | no clear difference | -2.19 [-2.55, -1.90] | A lower | -8.27 [-9.66, -7.19] | A lower | no clear difference in clicks, less watch time |
+| matched | (40, 5) | learned-myopic - SlateQ | -0.0001 [-0.0003, +0.0000] | no clear difference | -2.38 [-2.68, -2.20] | A lower | -9.03 [-10.20, -8.33] | A lower | no clear difference in clicks, less watch time |
+| matched | (80, 2) | oracle-myopic - SlateQ | +0.0001 [-0.0002, +0.0005] | no clear difference | -7.58 [-8.76, -6.41] | A lower | -29.18 [-33.66, -24.71] | A lower | no clear difference in clicks, less watch time |
+| matched | (80, 2) | learned-myopic - SlateQ | -0.0002 [-0.0007, +0.0003] | no clear difference | -10.69 [-12.71, -8.82] | A lower | -41.10 [-48.72, -33.94] | A lower | no clear difference in clicks, less watch time |
+| matched | (80, 3) | oracle-myopic - SlateQ | +0.0004 [+0.0001, +0.0007] | no clear difference | -7.11 [-8.29, -5.72] | A lower | -27.17 [-31.75, -21.79] | A lower | no clear difference in clicks, less watch time |
+| matched | (80, 3) | learned-myopic - SlateQ | -0.0000 [-0.0005, +0.0004] | no clear difference | -10.65 [-12.27, -9.03] | A lower | -40.57 [-46.80, -34.35] | A lower | no clear difference in clicks, less watch time |
+| matched | (80, 5) | oracle-myopic - SlateQ | +0.0000 [-0.0004, +0.0005] | no clear difference | -5.71 [-6.34, -4.98] | A lower | -21.52 [-23.89, -18.77] | A lower | no clear difference in clicks, less watch time |
+| matched | (80, 5) | learned-myopic - SlateQ | +0.0001 [-0.0003, +0.0005] | no clear difference | -7.27 [-8.04, -6.26] | A lower | -27.46 [-30.37, -23.71] | A lower | no clear difference in clicks, less watch time |
+| mild_noclick3 | (10, 3) | oracle-myopic - SlateQ | -0.0001 [-0.0002, +0.0001] | no clear difference | -0.30 [-0.35, -0.23] | A lower | -1.12 [-1.32, -0.90] | A lower | no clear difference in clicks, less watch time |
+| mild_noclick3 | (10, 3) | learned-myopic - SlateQ | -0.0001 [-0.0003, +0.0001] | no clear difference | -0.30 [-0.33, -0.27] | A lower | -1.12 [-1.25, -1.02] | A lower | no clear difference in clicks, less watch time |
+| moderate_logit | (10, 3) | oracle-myopic - SlateQ | -0.0001 [-0.0002, +0.0000] | no clear difference | -0.39 [-0.43, -0.36] | A lower | -1.51 [-1.68, -1.37] | A lower | no clear difference in clicks, less watch time |
+| moderate_logit | (10, 3) | learned-myopic - SlateQ | -0.0000 [-0.0002, +0.0001] | no clear difference | -0.42 [-0.46, -0.37] | A lower | -1.62 [-1.78, -1.41] | A lower | no clear difference in clicks, less watch time |
+| paper_cascade | (10, 3) | oracle-myopic - SlateQ | +0.0000 [-0.0000, +0.0002] | no clear difference | -0.62 [-0.70, -0.54] | A lower | -2.42 [-2.76, -2.11] | A lower | no clear difference in clicks, less watch time |
+| paper_cascade | (10, 3) | learned-myopic - SlateQ | +0.0001 [-0.0001, +0.0002] | no clear difference | -0.66 [-0.77, -0.55] | A lower | -2.54 [-2.96, -2.16] | A lower | no clear difference in clicks, less watch time |
+| severe_cascade | (10, 3) | oracle-myopic - SlateQ | -0.0000 [-0.0001, +0.0000] | no clear difference | -0.06 [-0.10, -0.01] | no clear difference | -0.23 [-0.40, -0.07] | no clear difference | no clear difference in clicks, no clear difference in watch time |
+| severe_cascade | (10, 3) | learned-myopic - SlateQ | -0.0000 [-0.0001, +0.0000] | no clear difference | -0.05 [-0.09, -0.02] | A lower | -0.22 [-0.38, -0.08] | no clear difference | no clear difference in clicks, no clear difference in watch time |
+
+Pattern counts (all cells and conditions, controls included):
+
+- learned-myopic - SlateQ: no clear difference in clicks, less watch time: 16; no clear difference in clicks, no clear difference in watch time: 2; more clicks, less watch time: 1.
+- oracle-myopic - SlateQ: no clear difference in clicks, less watch time: 16; no clear difference in clicks, no clear difference in watch time: 2; more clicks, less watch time: 1.
+
+Verdict counts per metric (myopic agent minus SlateQ):
+
+- learned-myopic - SlateQ, click rate: no clear difference: 18; A higher: 1.
+- learned-myopic - SlateQ, clicks per session: A lower: 18; no clear difference: 1.
+- learned-myopic - SlateQ, watch time per click: A higher: 10; no clear difference: 9.
+- learned-myopic - SlateQ, watch time per session: A lower: 17; no clear difference: 2.
+- oracle-myopic - SlateQ, click rate: no clear difference: 18; A higher: 1.
+- oracle-myopic - SlateQ, clicks per session: A lower: 17; no clear difference: 2.
+- oracle-myopic - SlateQ, watch time per click: A higher: 10; no clear difference: 9.
+- oracle-myopic - SlateQ, watch time per session: A lower: 17; no clear difference: 2.
+
+Per-agent click and watch metrics in the three focus cells (source: `results/phase6b/clicks_watch.csv`):
+
+| condition | (N, k) | agent | click rate | clicks per session | watch time per click | watch time per session |
+|---|---|---|---|---|---|---|
+| matched | (10, 3) | learned-myopic | 0.709 | 42.4 | 3.946 | 167.50 |
+| matched | (10, 3) | oracle-myopic | 0.709 | 42.5 | 3.946 | 167.59 |
+| matched | (10, 3) | random | 0.574 | 40.6 | 3.950 | 160.55 |
+| matched | (10, 3) | SlateQ | 0.710 | 42.9 | 3.946 | 169.20 |
+| matched | (80, 3) | learned-myopic | 0.743 | 47.6 | 3.924 | 186.65 |
+| matched | (80, 3) | oracle-myopic | 0.743 | 51.1 | 3.914 | 200.05 |
+| matched | (80, 3) | random | 0.574 | 40.6 | 3.949 | 160.35 |
+| matched | (80, 3) | SlateQ | 0.743 | 58.2 | 3.903 | 227.22 |
+| paper_cascade | (10, 3) | learned-myopic | 0.431 | 38.8 | 3.952 | 153.42 |
+| paper_cascade | (10, 3) | oracle-myopic | 0.431 | 38.9 | 3.952 | 153.54 |
+| paper_cascade | (10, 3) | random | 0.354 | 36.6 | 3.953 | 144.66 |
+| paper_cascade | (10, 3) | SlateQ | 0.431 | 39.5 | 3.951 | 155.96 |
+
