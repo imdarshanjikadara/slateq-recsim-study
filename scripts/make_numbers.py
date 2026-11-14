@@ -58,6 +58,114 @@ def seeds_list(r, prefix="diff_seed"):
     return ", ".join(f"{c[len(prefix) :]}: {f(r[c], sign=True)}" for c in cols)
 
 
+# ------------------------------------------------------------------------------- Phase 6b
+P6B_LABEL = {
+    **LABEL,
+    "lm_lr1e-3": "learned-myopic (lr 1e-3)",
+    "slateq_lr2.5e-4": "SlateQ (lr 2.5e-4)",
+    "slateq_g0.5": "SlateQ (gamma 0.5)",
+    "slateq_g0.9": "SlateQ (gamma 0.9)",
+    "slateq_g0.95": "SlateQ (gamma 0.95)",
+    "slateq_2x": "SlateQ (600K steps)",
+    "lm_2x": "learned-myopic (600K steps)",
+}
+
+
+def gap_table(rows: pd.DataFrame) -> list[str]:
+    """One markdown row per comparison: cell, mean, CI, per seed, verdict."""
+    out = [
+        "| comparison | (N, k) | mean | 95% CI | per seed | verdict |",
+        "|---|---|---|---|---|---|",
+    ]
+    for _, r in rows.iterrows():
+        out.append(
+            f"| {r.comparison} | ({r.num_candidates}, {r.slate_size}) | "
+            f"{f(r.get('mean_diff'), sign=True)} | {ci(r)} | {seeds_list(r)} | "
+            f"{VERDICT.get(r.verdict, r.verdict)} |"
+        )
+    return out
+
+
+def phase6b_lines(d: Path, rel) -> list[str]:
+    """NUMBERS section for PROTOCOL 16 (E1-E5). Empty if the analysis has not been run."""
+    if not (d / "gaps.csv").exists():
+        return []
+    gp = pd.read_csv(d / "gaps.csv")
+    ag = pd.read_csv(d / "agents.csv")
+    summ = json.loads((d / "summary.json").read_text("utf-8"))
+    L = [
+        "## Phase 6b (follow-up, registered after the Phase 6 results were seen; PROTOCOL 16)",
+        "",
+        f"Source: `{rel(d / 'gaps.csv')}`, `{rel(d / 'agents.csv')}`, "
+        f"`{rel(d / 'clicks_watch_gaps.csv')}` (`python scripts/phase6b_analyze.py`). "
+        f"Phase 6b run status: {summ.get('runs')}. Tables commit: "
+        f"`{(summ.get('provenance') or {}).get('git_sha')}`.",
+        "Baselines are the rq2 runs of the same cells and seeds (PROTOCOL 16.1).",
+        "",
+    ]
+    for tag, title in (
+        ("E1", "E1: matched learning rates"),
+        ("E2", "E2: planning horizon (all at lr 1e-3)"),
+        ("E3", "E3: twice the training budget at (80, 3)"),
+        ("E4", "E4: the SlateQ paper's cascade (N=10, k=3)"),
+    ):
+        rows = gp[gp.comparison.str.startswith(tag + ":")]
+        if rows.empty:
+            continue
+        L += [f"### {title}", ""] + gap_table(rows) + [""]
+
+    L += [
+        "### Mean watch time per session of each agent or variant",
+        "",
+        "| condition | (N, k) | agent | mean | 95% CI | session length | clicked quality | seeds |",
+        "|---|---|---|---|---|---|---|---|",
+    ]
+    for _, r in ag.sort_values(["condition", "num_candidates", "agent"]).iterrows():
+        lo, hi = r.get("mean_total_reward_ci95_low"), r.get("mean_total_reward_ci95_high")
+        L.append(
+            f"| {r.condition} | ({r.num_candidates}, {r.slate_size}) | "
+            f"{P6B_LABEL.get(r.agent, r.agent)} | {f(r.get('mean_total_reward'))} | "
+            f"[{f(lo)}, {f(hi)}] | {f(r.get('mean_length'), 1)} | "
+            f"{f(r.get('mean_clicked_quality'), 3)} | {r.n_seeds} |"
+        )
+    L.append("")
+
+    cw = d / "clicks_watch_gaps.csv"
+    if cw.exists():
+        e5 = pd.read_csv(cw)
+        L += [
+            "### E5: clicks versus watch time (rq2, rq3 and E4 runs)",
+            "",
+            "Click rate = clicks per recommendation step; watch time = total reward per session. "
+            "Each difference is the myopic agent minus SlateQ, with the PROTOCOL 14.6 verdict.",
+            "",
+            "| condition | (N, k) | comparison | click rate diff [CI] | verdict | "
+            "watch time diff [CI] | verdict | pattern |",
+            "|---|---|---|---|---|---|---|---|",
+        ]
+        for _, r in e5.iterrows():
+            click = (
+                f"{f(r.click_rate_diff, 4, True)} [{f(r.click_rate_ci95_low, 4, True)}, "
+                f"{f(r.click_rate_ci95_high, 4, True)}]"
+            )
+            watch = (
+                f"{f(r.watch_per_session_diff, 2, True)} "
+                f"[{f(r.watch_per_session_ci95_low, 2, True)}, "
+                f"{f(r.watch_per_session_ci95_high, 2, True)}]"
+            )
+            cond = f"{r.condition}{' (control)' if r.control else ''}"
+            L.append(
+                f"| {cond} | ({r.num_candidates}, {r.slate_size}) | {r.comparison} | {click} | "
+                f"{r.click_rate_verdict} | {watch} | {r.watch_per_session_verdict} | {r.pattern} |"
+            )
+        L += ["", "Pattern counts (all cells and conditions, controls included):", ""]
+        for comp, g in e5.groupby("comparison"):
+            counts = g.pattern.value_counts()
+            L.append(f"- {comp}: " + "; ".join(f"{k}: {v}" for k, v in counts.items()) + ".")
+        L.append("")
+    return L
+
+
 def main() -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--rq2", type=Path, default=REPO_ROOT / "results" / "rq2")
@@ -274,6 +382,7 @@ def main() -> int:
             L.append(f"| {RUNG[rung]} | " + " | ".join(parts) + " |")
         L.append("")
 
+    L += phase6b_lines(REPO_ROOT / "results" / "phase6b", rel)
     args.out.write_text("\n".join(L) + "\n", "utf-8")
     print(f"wrote {args.out}{' (PILOT)' if pilot else ''}")
 

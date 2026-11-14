@@ -97,6 +97,16 @@ def main() -> int:
         },
         "rq3": {"agents": table(args.rq3 / "agents.csv"), "gaps": table(args.rq3 / "gaps.csv")},
     }
+    # Phase 6b follow-up tables (PROTOCOL 16). Data only: the current page does not show them yet;
+    # they are here for the planned side-by-side feed demo.
+    p6b = REPO_ROOT / "results" / "phase6b"
+    if (p6b / "gaps.csv").exists():
+        site["phase6b"] = {
+            "agents": table(p6b / "agents.csv"),
+            "gaps": table(p6b / "gaps.csv"),
+            "clicks_watch": table(p6b / "clicks_watch.csv"),
+            "clicks_watch_gaps": table(p6b / "clicks_watch_gaps.csv"),
+        }
     (args.out / "site.json").write_text(json.dumps(clean(site)), "utf-8")
     size = sum(p.stat().st_size for p in args.out.glob("*.json")) / 1e6
     print(f"web data -> {args.out} ({size:.1f} MB; trace seeds {seeds}; pilot={site['pilot']})")

@@ -5,7 +5,7 @@ UV ?= python -m uv
 SPEC ?= configs/experiments/rq2.yaml
 WORKERS ?= 4
 
-.PHONY: setup test smoke lint format sweep-dry sweep analyze figures web numbers demo reproduce-small reproduce-full
+.PHONY: setup test smoke lint format sweep-dry sweep analyze figures web numbers phase6b demo reproduce-small reproduce-full
 
 # results tables (results/rq2, results/rq3) -> figures (results/figures) -> site data (web/data)
 analyze:
@@ -16,6 +16,11 @@ figures:
 
 web:
 	$(UV) run python scripts/build_web.py
+
+# Phase 6b follow-up (PROTOCOL 16): tables -> results/phase6b, figures F9-F11
+phase6b:
+	$(UV) run python scripts/phase6b_analyze.py
+	$(UV) run python scripts/phase6b_figures.py
 
 numbers:
 	$(UV) run python scripts/make_numbers.py
