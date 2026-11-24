@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SlateStream</title>
+  <meta name="description" content="A streaming-style replay of the SlateQ vs myopic recommendation study: watch recorded simulated viewers under each recommender, race them, and browse the results.">
+  <meta name="theme-color" content="#08080c">
+  <link rel="stylesheet" href="stream/style.css">
+  <script src="stream/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-in">
+      <a class="brand" href="#watch" data-view="watch" aria-label="SlateStream home">
+        <svg viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="6" width="8" height="20" rx="2.5"/><rect x="12" y="6" width="8" height="20" rx="2.5"/><rect x="22" y="6" width="8" height="20" rx="2.5"/><path d="M13.6 11.5v9l7-4.5z" class="play"/></svg>
+        <span>Slate<b>Stream</b></span>
+      </a>
+      <nav class="nav" aria-label="Views">
+        <button data-view="watch" aria-current="page">Watch</button>
+        <button data-view="race">Race</button>
+        <button data-view="taste">Taste</button>
+        <button data-view="findings">Findings</button>
+        <button data-view="about">How it works</button>
+      </nav>
+      <a class="classic" href="index.html">Results site &rarr;</a>
+    </div>
+  </header>
+
+  <main>
+    <!-- shared viewer picker + transport (watch, race, taste) -->
+    <section class="viewer-bar" id="viewer-bar" aria-label="Choose a simulated viewer">
+      <div class="wrap">
+        <div class="vb-head">
+          <h2>Choose a viewer</h2>
+          <p class="muted" id="vb-note"></p>
+        </div>
+        <div class="viewers" id="viewers" role="listbox" aria-label="Recorded viewers"></div>
+      </div>
+    </section>
+
+    <!-- WATCH: two recommenders, same viewer -->
+    <section class="view" id="watch" aria-labelledby="watch-h">
+      <div class="wrap">
+        <div class="hero">
+          <p class="eyebrow">Same viewer &middot; two recommenders</p>
+          <h1 id="watch-h">Who keeps the viewer watching longer?</h1>
+          <p class="lede" id="watch-lede"></p>
+        </div>
+        <div class="duel">
+          <article class="pane" id="paneL"></article>
+          <div class="vs" aria-hidden="true">VS</div>
+          <article class="pane" id="paneR"></article>
+        </div>
+        <div class="verdict-bar" id="duel-verdict" hidden></div>
+      </div>
+    </section>
+
+    <!-- RACE: all four agents -->
+    <section class="view" id="race" aria-labelledby="race-h" hidden>
+      <div class="wrap">
+        <div class="hero">
+          <p class="eyebrow">Same viewer &middot; four recommenders</p>
+          <h1 id="race-h">The watch-time race</h1>
+          <p class="lede">Each lane is the same simulated viewer served by a different recommender. The runner moves forward with every second watched; the bar under it is the viewer's remaining time budget. The session ends when the budget runs out.</p>
+        </div>
+        <div class="lanes" id="lanes"></div>
+        <div class="podium" id="podium" hidden></div>
+      </div>
+    </section>
+
+    <!-- TASTE: interest drift -->
+    <section class="view" id="taste" aria-labelledby="taste-h" hidden>
+      <div class="wrap">
+        <div class="hero">
+          <p class="eyebrow">How the viewer's taste changes</p>
+          <h1 id="taste-h">Taste profile over the session</h1>
+          <p class="lede">Each strip is one recommender. Rows are the 20 topics, columns are steps of the session. Warm colours mean the viewer likes the topic, cool colours mean they dislike it. White dots mark the topic that was watched at that step. What a recommender shows slowly changes what the viewer likes.</p>
+        </div>
+        <div class="chips taste-mode" id="taste-mode"><span>show</span><button class="chip" data-mode="abs" aria-pressed="true">Taste level</button><button class="chip" data-mode="delta" aria-pressed="false">Change since step 1</button></div>
+        <div class="legend-row">
+          <span class="lg-scale"><i></i></span><span class="muted" id="lg-lo">dislike</span><span class="muted lg-r" id="lg-hi">like</span>
+        </div>
+        <div class="tastes" id="tastes"></div>
+      </div>
+    </section>
+
+    <!-- FINDINGS -->
+    <section class="view" id="findings" aria-labelledby="findings-h" hidden>
+      <div class="wrap">
+        <div class="hero">
+          <p class="eyebrow">Averages over every test viewer</p>
+          <h1 id="findings-h">What the experiments found</h1>
+          <p class="lede" id="findings-lede"></p>
+        </div>
+        <div id="rows"></div>
+        <p class="fineprint" id="findings-fine"></p>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section class="view" id="about" aria-labelledby="about-h" hidden>
+      <div class="wrap prose">
+        <div class="hero">
+          <p class="eyebrow">In plain words</p>
+          <h1 id="about-h">How SlateStream works</h1>
+        </div>
+        <div class="about-grid" id="about-grid"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- transport (sticky) -->
+  <div class="transport" id="transport" role="group" aria-label="Playback controls">
+    <div class="tp-in">
+      <button class="tp-btn" id="tp-restart" title="Restart" aria-label="Restart"><svg viewBox="0 0 24 24"><path d="M6 5h2v14H6zM20 5v14L9 12z"/></svg></button>
+      <button class="tp-btn" id="tp-back" title="Step back (&larr;)" aria-label="Step back"><svg viewBox="0 0 24 24"><path d="M15 6v12L7 12z"/></svg></button>
+      <button class="tp-btn tp-play" id="tp-play" title="Play / pause (space)" aria-label="Play"><svg viewBox="0 0 24 24" class="i-play"><path d="M8 5v14l11-7z"/></svg><svg viewBox="0 0 24 24" class="i-pause"><path d="M7 5h4v14H7zM13 5h4v14h-4z"/></svg></button>
+      <button class="tp-btn" id="tp-fwd" title="Step forward (&rarr;)" aria-label="Step forward"><svg viewBox="0 0 24 24"><path d="M9 6v12l8-6z"/></svg></button>
+      <input type="range" id="tp-scrub" min="0" max="1" value="0" step="1" aria-label="Session step">
+      <span class="tp-step" id="tp-step">step 0</span>
+      <label class="tp-speed">speed
+        <select id="tp-speed"><option value="0.5">0.5&times;</option><option value="1" selected>1&times;</option><option value="2">2&times;</option><option value="4">4&times;</option><option value="8">8&times;</option></select>
+      </label>
+    </div>
+  </div>
+
+  <dialog id="modal" aria-labelledby="modal-title">
+    <div class="modal-in">
+      <button class="modal-x" id="modal-x" aria-label="Close">&times;</button>
+      <div id="modal-body"></div>
+    </div>
+  </dialog>
+
+  <noscript><p class="wrap">SlateStream needs JavaScript to replay the recorded sessions.</p></noscript>
+</body>
+</html>
