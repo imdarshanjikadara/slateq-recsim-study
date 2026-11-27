@@ -70,7 +70,7 @@ We did not run RecSim's original TF1 agent next to ours (its stack is excluded, 
   - SlateQ: learning rate **1e-3**, target period 1000.
   - Learned-myopic: learning rate **2.5e-4**, target period 1000.
 - **Correct wording:** same architecture, data, budget and tuning budget (9-config grid each, same seeds 100-101, same tune episodes). **The learning rate was tuned separately per agent.**
-- "Identical network and optimizer; only the horizon differs" is **not accurate**. Lines that say this (DEVIATIONS D7, PROTOCOL 14.3, RECON, the agent docstring) are listed in WORDING_ISSUES.md. They are not edited here.
+- "Identical network and optimizer; only the horizon differs" is **not accurate**. The correction is recorded in DEVIATIONS D7 and in the PROTOCOL change log (2026-11-13), and E1 (PROTOCOL §16.3) measures the effect.
 
 ### Confound assessment from existing data only
 
@@ -85,7 +85,7 @@ Source: `results/phase3/tune.json` → `grid`. Tune stream, cell (10, 3), 2 seed
 - **At every matched learning rate SlateQ is higher.** All 9 SlateQ configs (169.51-170.22) are above all learned-myopic configs (168.29-168.48).
 - For learned-myopic the target period has no effect: γ = 0 means the target network never enters the loss, so its three periods give identical values (PROTOCOL 12.6).
 - **Conclusion (scoped):** at (10, 3), on tune-stream data, the sign and rough size of the gap do not depend on giving the agents different learning rates.
-- **Limits:** 2 seeds, not the eval stream, one cell. **Untested:** whether the learning-rate choice contributes to the large gaps at N ≥ 40, where learned-myopic falls below the oracle. See PROPOSED_DIAGNOSTICS D-1.
+- **Limits:** 2 seeds, not the eval stream, one cell. **Untested:** whether the learning-rate choice contributes to the large gaps at N ≥ 40, where learned-myopic falls below the oracle. This was later tested as E1 (PROTOCOL §16.3; RESULTS.md, Phase 6b addendum).
 
 ## Other facts needed for positioning
 

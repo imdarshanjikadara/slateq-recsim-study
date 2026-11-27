@@ -70,7 +70,7 @@ A FedSlate study [deng2025fedslate] builds a federated variant of SlateQ in a Re
 
 Under its cascade users, the SlateQ paper reports SlateQ still ahead of MYOP. Under our cascade rung, the SlateQ − learned-myopic gap is +0.22 (95% CI [+0.08, +0.38]; one of five seeds at −0.01), which is "no clear difference" by our pre-registered rule. SlateQ still far exceeds random (108.00 vs 84.19).
 
-The two experiments are not the same. Explanations, by label (DISCREPANCIES.md):
+The two experiments are not the same. Explanations, by label (SUPPORTED = shown by our files or the paper; PLAUSIBLE = consistent with the evidence but not tested; SPECULATIVE = possible, no evidence either way):
 
 - **SUPPORTED: the cascades are parameterised differently.** In the paper, random's return barely changed under cascade. In ours, it fell from 160.55 to 84.19 and sessions lengthened from 70.8 to 227.3 steps, i.e. clicks became rare. Fewer clicks leave less room for the long-term lever (quality-driven budget refunds).
 - **PLAUSIBLE: with rare clicks, the reference implementation's zero no-click value shortens SlateQ's effective horizon further, and most transitions are not trained on.**
@@ -78,7 +78,7 @@ The two experiments are not the same. Explanations, by label (DISCREPANCIES.md):
 
 For context only (different implementation): the paper's SARSA-TS is +1.96 % over MYOP-TS under cascade. Ours is +0.20 % over learned-myopic.
 
-We therefore do not read our result as contradicting the paper. It shows that the advantage depends on the cascade's parameters, which the paper did not vary.
+We therefore do not read our result as contradicting the paper. It shows that the advantage depends on the cascade's parameters, which the paper did not vary. The follow-up E4 (exploratory, registered after these results) supports the first explanation: under a cascade built from the paper's description, the gap is clear again (+2.54, 95% CI [+2.16, +2.96]).
 
 ---
 

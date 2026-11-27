@@ -4,7 +4,7 @@
 
 - **Read:** Ie et al., "Reinforcement Learning for Slate-based Recommender Systems: A Tractable Decomposition and Practical Methodology", arXiv:1905.12767v2 (2019), 13 authors. This is a preprint, the long version.
 - **Peer-reviewed short version:** IJCAI-19, pp. 2592-2599, doi 10.24963/ijcai.2019/360. Not read here; the section numbers below refer to the arXiv version.
-- **Evidence level:** E3. Full text: `docs/papers/slateq.pdf` / `.txt`. Page numbers are the paper's printed page numbers.
+- **Evidence level:** E3. Full text: arXiv:1905.12767 (https://arxiv.org/abs/1905.12767). Page numbers are the paper's printed page numbers.
 
 ## Claim (own words)
 

@@ -13,7 +13,9 @@ Interest Evolution simulator, whether that long-term view actually yields more e
 | **RQ2** | How does that gap change with catalog size N (candidates per step) and slate size k? |
 | **RQ3** | How sensitive is SlateQ's advantage to a misspecified user choice model? |
 
-**Interactive results:** the static site in [`web/`](web/) (overview, RQ1-RQ3, and a step-by-step replay of one simulated user under every policy). It is deployed on Vercel as a static folder (`vercel.json`, `.vercelignore`: only `web/` is uploaded, nothing is built).
+**Start here:** [`docs/SUMMARY.md`](docs/SUMMARY.md), a one-page summary of the question, method and key results.
+
+**Interactive results:** [SlateStream](https://slatestream.vercel.app) ([repository](https://github.com/imdarshanjikadara/slatestream)) replays recorded sessions of simulated viewers under every policy and shows every result with its confidence interval. It reads the data files written by `scripts/build_web.py`. The simpler static page in [`web/`](web/) shows the same tables.
 
 ## Results
 
@@ -85,15 +87,9 @@ cd slateq-recsim-study && make setup
 ## Quickstart
 
 ```bash
-make test
-```
-
-```bash
-make smoke
-```
-
-```bash
-make reproduce-small
+make test             # unit tests
+make smoke            # 3-episode end-to-end check
+make reproduce-small  # whole pipeline on a tiny pilot grid
 ```
 
 `make reproduce-small` runs the whole pipeline end to end in a few minutes on a laptop CPU. It uses 1 cell × 4 policies × 2 seeds with short training, then builds tables and figures into `results/small/`. Its numbers are a plumbing check and its figures are watermarked "PILOT".
@@ -101,11 +97,8 @@ make reproduce-small
 ## Reproduce the full study
 
 ```bash
-make sweep-dry
-```
-
-```bash
-make reproduce-full
+make sweep-dry        # list every job with a wall-clock estimate
+make reproduce-full   # RQ1/RQ2 and RQ3 sweeps, analysis, figures, site data, NUMBERS.md
 ```
 
 `make sweep-dry` prints every job and a wall-clock estimate from measured throughput (`results/protocol/timing.json`). `make reproduce-full` runs the RQ1/RQ2 sweep (300 runs), the RQ3 sweep, analysis, figures and site data. Runs are resumable, so rerun the same command after an interruption. A single run is `uv run python scripts/run_one.py --config <yaml> --seed <k>`.
@@ -117,7 +110,8 @@ make reproduce-full
 | `src/slateq_study/` | package: RecSim shim, env factory, agents, harness, metrics, stats, sweep runner, analysis |
 | `scripts/` | `run_one.py`, `sweep.py`, `phase3.py` (training checks, budget, tuning), `analyze.py`, `figures.py`, `build_web.py` |
 | `configs/experiments/` | sweep specs (`rq2.yaml`, `rq3.yaml`; pilot specs are plumbing checks only) |
-| `docs/` | `proposal.md` (approved scope), `PROTOCOL.md`, `DEVIATIONS.md`, `RECON.md`, `ENV.md`, `TRAINING_NOTES.md` |
+| `docs/` | `SUMMARY.md` (one page), `proposal.md` (approved scope), `PROTOCOL.md` (rules fixed before the runs), `DEVIATIONS.md`, `NUMBERS.md` (every number, generated), `RESULTS.md`, `EXPLAINER.md`, `RECON.md`, `ENV.md`, `TRAINING_NOTES.md`, `SUPPLEMENT_STATS.md`, `AI_ASSISTANCE.md` |
+| `docs/literature/` | reading notes per paper, overlap matrix, positioning, related-work draft, `references.bib` |
 | `results/` | committed summary tables and figures (`results/raw/` is not committed) |
 | `web/` | static presentation site |
 
@@ -134,8 +128,8 @@ make reproduce-full
 
 ## References
 
-- Ie, E., Jain, V., Wang, J., Narvekar, S., Agarwal, R., Wu, R., Cheng, H.-T., Chandra, T., Boutilier, C. (2019). *SlateQ: A Tractable Decomposition for Reinforcement Learning with Recommendation Sets.* IJCAI.
-- Ie, E., Hsu, C., Mladenov, M., Jain, V., Narvekar, S., Wang, J., Wu, R., Boutilier, C. (2019). *RecSim: A Configurable Simulation Platform for Recommender Systems.* arXiv:1909.04847.
+- Ie, E., Jain, V., Wang, J., Narvekar, S., Agarwal, R., Wu, R., Cheng, H.-T., Chandra, T., Boutilier, C. (2019). *SlateQ: A Tractable Decomposition for Reinforcement Learning with Recommendation Sets.* IJCAI. Extended version: *Reinforcement Learning for Slate-based Recommender Systems: A Tractable Decomposition and Practical Methodology*, [arXiv:1905.12767](https://arxiv.org/abs/1905.12767).
+- Ie, E., Hsu, C., Mladenov, M., Jain, V., Narvekar, S., Wang, J., Wu, R., Boutilier, C. (2019). *RecSim: A Configurable Simulation Platform for Recommender Systems.* [arXiv:1909.04847](https://arxiv.org/abs/1909.04847). Code: [google-research/recsim](https://github.com/google-research/recsim).
 
 ## License
 
