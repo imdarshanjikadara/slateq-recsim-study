@@ -42,7 +42,7 @@ walkthrough of the whole project is in [`docs/EXPLAINER.md`](docs/EXPLAINER.md).
 - **Policies.**
   - `slateq`: decomposed SlateQ (top-k selection, SARSA target), a PyTorch port of RecSim's `SlateDecompQAgent`.
   - `learned_myopic`: the same agent with γ = 0. This is the **primary comparison**: same architecture, data, training budget and tuning budget, but each agent keeps its own tuned learning rate (PROTOCOL 12.6), so the horizon is the main difference, not the only one.
-  - `oracle_myopic`: RecSim's greedy pCTR agent given the true user state. It is privileged: a ceiling for click-maximisers.
+  - `oracle_myopic`: RecSim's greedy pCTR agent given the true user state and the true choice model. It is privileged: a ceiling for click-maximisers. (All agents observe the interest vector; the oracle's advantage is the exact click model.)
   - `random`.
 - **Protocol** ([`docs/PROTOCOL.md`](docs/PROTOCOL.md)). Fixed before any result was seen:
   - Disjoint train / tune / eval user streams.
@@ -124,7 +124,7 @@ make reproduce-full
 ## Limitations and threats to validity
 
 - **Simulated users.** Conclusions are about RecSim Interest Evolution, not about real platforms.
-- **Privileged oracle.** `oracle_myopic` reads the true user state. It is a ceiling, not a deployable baseline; the fair comparison is `learned_myopic`.
+- **Privileged oracle.** `oracle_myopic` reads the true user state and uses the environment's true choice model. Every agent observes the user's interests, so its advantage is knowing the exact click model rather than seeing hidden interests. It is a ceiling, not a deployable baseline; the fair comparison is `learned_myopic`.
 - **"Catalog size" means candidates per step.** RecSim redraws candidates every step; there is no fixed catalogue ([DEVIATIONS](docs/DEVIATIONS.md) D5).
 - **Re-implemented agent.** SlateQ is our PyTorch port of RecSim's agent. RecSim's original TensorFlow agent was never run side by side with it (D3), so there is no end-to-end equivalence check. The evidence we do have: unit tests of every formula (scores, top-k, SARSA target, ε schedule), a γ = 0 version that matches the privileged oracle (97 % of the oracle's gain over random in Phase 3), Q-values on the expected scale, and exact replay of saved models ([`docs/literature/OUR_SETUP_FACTS.md`](docs/literature/OUR_SETUP_FACTS.md)). Small differences from the TF agent (D8) could still shift absolute numbers; our results are results for this port.
 - **No-click handling.** Following the reference implementation, the no-click option has zero continuation value. This shortens SlateQ's effective horizon (D6, [`docs/TRAINING_NOTES.md`](docs/TRAINING_NOTES.md)).

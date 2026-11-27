@@ -8,7 +8,7 @@ A recommender that only predicts the **next** click (a *myopic* recommender) pic
 
 ## 2. The simulator (RecSim Interest Evolution)
 
-- **User.** Each simulated user has hidden interests in 20 topics (numbers between -1 and 1) and a **time budget** of 200.
+- **User.** Each simulated user has interests in 20 topics (numbers between -1 and 1) and a **time budget** of 200. The interests are part of what every agent observes; the time budget is not.
 - **Each step.** The system draws N fresh candidate videos. Each video has one topic and a hidden **quality**. Quality depends on the topic: 14 of the 20 topics have a negative average quality ("trashy") and 6 a positive one ("nutritious"). The recommender shows k of the N videos (the slate).
 - **Choice.** The user clicks at most one item, more likely the ones whose topic matches their interests. The probability rule is the **choice model**. By default it is "proportional": score = interest in the topic + 1, with a fixed score of 2 for "no click".
 - **Reward.** If the user clicks, the reward is the **watch time**: every video is 4 long, so a click is worth 4 (less only if the budget is about to run out). No click: reward 0, and the budget drops by 0.5.
@@ -20,7 +20,7 @@ A recommender that only predicts the **next** click (a *myopic* recommender) pic
 | Agent | What it does | Why it is in the study |
 |---|---|---|
 | **random** | Shows k random candidates | Floor: any learning should beat it |
-| **oracle-myopic** | Is given the user's true hidden interests and the true choice model, and shows the k most clickable items | The best possible **click-maximiser**. It cannot be badly trained, so beating it means planning helps beyond perfect click prediction. Not a realistic system: it is privileged. |
+| **oracle-myopic** | Is given the environment's true choice model (the exact click formula) and the true user-state object, and shows the k most clickable items. Every agent sees the user's interests; the oracle's advantage is knowing exactly how they turn into clicks, with nothing to learn | The best possible **click-maximiser**. It cannot be badly trained, so beating it means planning helps beyond perfect click prediction. Not a realistic system: it is privileged. |
 | **learned-myopic** | Our SlateQ code with γ = 0: it learns to predict the immediate reward only | The fair myopic baseline: same network, same data, same training budget as SlateQ |
 | **SlateQ** | Our SlateQ code with γ = 0.99: it learns long-term value | The method under study |
 
